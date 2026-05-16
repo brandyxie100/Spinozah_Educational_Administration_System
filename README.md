@@ -1,0 +1,1 @@
+# spinozah-ai-education

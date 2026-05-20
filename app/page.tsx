@@ -123,10 +123,79 @@ setExtractedText(result.text || 'No text extracted');
             <div className="mt-6 p-6 bg-slate-100 rounded-xl space-y-3">
               <h2 className="text-2xl font-bold">Structured Analysis Report</h2>
               <p><strong>Student:</strong> {studentName}</p>
-              <p><strong>Subject:</strong> Reading</p>
-              <p><strong>Total Score:</strong> 68/100</p>
-              <p><strong>Weak Areas:</strong> Inference, Vocabulary, Grammar</p>
-              <p><strong>Recommendation:</strong> Reading comprehension practice</p>
+
+<p><strong>Subject:</strong> Reading Comprehension</p>
+
+<p><strong>Total Score:</strong> 68/100</p>
+
+<p>
+  <strong>Strengths:</strong>
+  Vocabulary recognition, literal comprehension, sentence matching
+</p>
+
+<p>
+  <strong>Weak Areas:</strong>
+  Inference questions, deeper comprehension, grammar accuracy,
+  paragraph understanding
+</p>
+
+<p>
+  <strong>Common Mistakes:</strong>
+  The student tends to miss contextual clues and struggles with
+  identifying implied meanings in longer passages.
+</p>
+
+<p>
+  <strong>Learning Behaviour:</strong>
+  The student shows basic understanding of the text but needs support
+  with analytical reading skills and independent thinking.
+</p>
+
+<p>
+  <strong>Recommended Teaching Focus:</strong>
+</p>
+
+<ul className="list-disc pl-6 space-y-1">
+  <li>Inference training</li>
+  <li>Daily vocabulary expansion</li>
+  <li>Grammar correction exercises</li>
+  <li>Paragraph summarising practice</li>
+  <li>Timed reading comprehension</li>
+</ul>
+
+<p className="pt-4">
+  <strong>4-Week Teaching Plan:</strong>
+</p>
+
+<div className="bg-white p-4 rounded-lg border space-y-2">
+
+  <p>
+    <strong>Week 1:</strong>
+    Vocabulary building and sentence structure correction
+  </p>
+
+  <p>
+    <strong>Week 2:</strong>
+    Reading comprehension with short passages and key idea extraction
+  </p>
+
+  <p>
+    <strong>Week 3:</strong>
+    Inference question training and evidence finding
+  </p>
+
+  <p>
+    <strong>Week 4:</strong>
+    Timed practice test and mistake review
+  </p>
+
+</div>
+
+<p className="pt-4">
+  <strong>Parent Recommendation:</strong>
+  Encourage 20 minutes of daily reading and discuss story meaning
+  together after reading.
+</p>
             </div>
           )}
         </div>

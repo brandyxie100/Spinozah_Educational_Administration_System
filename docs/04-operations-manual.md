@@ -63,7 +63,11 @@ Create `.env.local` in the project root (never commit):
 # OPENAI_API_KEY=sk-...                        # server-side only; use in API routes
 ```
 
-Copy from `.env.example` when that file is added to the repo.
+Copy from `.env.example` in the project root:
+
+```bash
+cp .env.example .env.local
+```
 
 **Rules:**
 

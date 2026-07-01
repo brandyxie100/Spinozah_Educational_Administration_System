@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { BackButton } from '@/components/dashboard/BackButton';
+import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 
 export default function SpinozahEducationDashboard() {
   const [activeModule, setActiveModule] = useState('Dashboard');
-  const [studentName, setStudentName] = useState('Charlotte');
-  const [showReport, setShowReport] = useState(false);
-  const [extractedText, setExtractedText] = useState('');
+  const goToDashboard = () => setActiveModule('Dashboard');
 
   const modules = [
     { title: 'Teacher Timetable', icon: '🗓️', desc: '老师查看实时排课与课程更新' },
@@ -20,19 +20,10 @@ export default function SpinozahEducationDashboard() {
     { title: 'University Pathway', icon: '🎓', desc: '根据成绩推荐大学和专业' },
   ];
 
-  const BackButton = () => (
-    <button
-      onClick={() => setActiveModule('Dashboard')}
-      className="mb-6 bg-black text-white px-4 py-2 rounded-lg"
-    >
-      ← Back
-    </button>
-  );
-
   if (activeModule === 'Teacher Timetable') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Teacher Timetable</h1>
         <div className="bg-white p-6 rounded-xl shadow space-y-3">
           <p>Wednesday Schedule</p>
@@ -47,7 +38,7 @@ export default function SpinozahEducationDashboard() {
   if (activeModule === 'Student Management') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Student Management</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>Students: Charlotte, Chace, Olivia, Zoe, Nemo</p>
@@ -60,7 +51,7 @@ export default function SpinozahEducationDashboard() {
   if (activeModule === 'Attendance & Leave') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Attendance & Leave</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>Charlotte: Present</p>
@@ -74,131 +65,9 @@ export default function SpinozahEducationDashboard() {
   if (activeModule === 'Question Analysis') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Question Analysis</h1>
-
-        <div className="bg-white shadow rounded-xl p-6 space-y-4">
-          <input
-            type="file"
-            className="block w-full border rounded-lg p-2"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const name = file.name.split('.')[0].split(' ')[0];
-                setStudentName(name);
-                setShowReport(false);
-
-                const formData = new FormData();
-formData.append('file', file);
-
-const response = await fetch('/api/analyze', {
-  method: 'POST',
-  body: formData,
-});
-
-const result = await response.json();
-
-setExtractedText(result.text || 'No text extracted');
-              }
-            }}
-          />
-
-          <button
-            onClick={() => setShowReport(true)}
-            className="w-full bg-black text-white rounded-lg px-4 py-2"
-          >
-            Analyze Test Paper
-          </button>
-
-          {extractedText && (
-            <div className="bg-white border rounded-xl p-4 mt-4">
-              <h3 className="font-bold mb-2">Extracted Content Preview</h3>
-              <pre className="whitespace-pre-wrap text-sm text-gray-700 overflow-auto max-h-64">
-                {extractedText}
-              </pre>
-            </div>
-          )}
-
-          {showReport && (
-            <div className="mt-6 p-6 bg-slate-100 rounded-xl space-y-3">
-              <h2 className="text-2xl font-bold">Structured Analysis Report</h2>
-              <p><strong>Student:</strong> {studentName}</p>
-
-<p><strong>Subject:</strong> Reading Comprehension</p>
-
-<p><strong>Total Score:</strong> 68/100</p>
-
-<p>
-  <strong>Strengths:</strong>
-  Vocabulary recognition, literal comprehension, sentence matching
-</p>
-
-<p>
-  <strong>Weak Areas:</strong>
-  Inference questions, deeper comprehension, grammar accuracy,
-  paragraph understanding
-</p>
-
-<p>
-  <strong>Common Mistakes:</strong>
-  The student tends to miss contextual clues and struggles with
-  identifying implied meanings in longer passages.
-</p>
-
-<p>
-  <strong>Learning Behaviour:</strong>
-  The student shows basic understanding of the text but needs support
-  with analytical reading skills and independent thinking.
-</p>
-
-<p>
-  <strong>Recommended Teaching Focus:</strong>
-</p>
-
-<ul className="list-disc pl-6 space-y-1">
-  <li>Inference training</li>
-  <li>Daily vocabulary expansion</li>
-  <li>Grammar correction exercises</li>
-  <li>Paragraph summarising practice</li>
-  <li>Timed reading comprehension</li>
-</ul>
-
-<p className="pt-4">
-  <strong>4-Week Teaching Plan:</strong>
-</p>
-
-<div className="bg-white p-4 rounded-lg border space-y-2">
-
-  <p>
-    <strong>Week 1:</strong>
-    Vocabulary building and sentence structure correction
-  </p>
-
-  <p>
-    <strong>Week 2:</strong>
-    Reading comprehension with short passages and key idea extraction
-  </p>
-
-  <p>
-    <strong>Week 3:</strong>
-    Inference question training and evidence finding
-  </p>
-
-  <p>
-    <strong>Week 4:</strong>
-    Timed practice test and mistake review
-  </p>
-
-</div>
-
-<p className="pt-4">
-  <strong>Parent Recommendation:</strong>
-  Encourage 20 minutes of daily reading and discuss story meaning
-  together after reading.
-</p>
-            </div>
-          )}
-        </div>
+        <QuestionAnalysisPanel />
       </div>
     );
   }
@@ -206,7 +75,7 @@ setExtractedText(result.text || 'No text extracted');
   if (activeModule === 'Parent Portal') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Parent Portal</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>Charlotte: 8 lessons completed, 2 remaining</p>
@@ -218,7 +87,7 @@ setExtractedText(result.text || 'No text extracted');
   if (activeModule === 'Finance & Invoice') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Finance & Invoice</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>Next invoice auto-generated for Term 3.</p>
@@ -230,7 +99,7 @@ setExtractedText(result.text || 'No text extracted');
   if (activeModule === 'AI Reports') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">AI Reports</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>Generate writing, mistake and assessment reports.</p>
@@ -242,7 +111,7 @@ setExtractedText(result.text || 'No text extracted');
   if (activeModule === 'Lesson Planning') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Lesson Planning</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>AI recommends next lesson based on student weaknesses.</p>
@@ -254,7 +123,7 @@ setExtractedText(result.text || 'No text extracted');
   if (activeModule === 'University Pathway') {
     return (
       <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton />
+        <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">University Pathway</h1>
         <div className="bg-white p-6 rounded-xl shadow">
           <p>Recommend majors and universities after IGCSE/A-Level results.</p>

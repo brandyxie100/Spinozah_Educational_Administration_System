@@ -1,27 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as pdfParse from 'pdf-parse';
+import { extractTextFromExamFile } from '@/lib/ai-analysis';
 
+/**
+ * Legacy PDF text extraction endpoint.
+ * Prefer POST /api/ai/exams/analyze for full structured analysis.
+ */
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const file = formData.get('file') as File;
+    const file = formData.get('file');
 
-    if (!file) {
+    if (!(file instanceof File)) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const text = await extractTextFromExamFile(buffer, file.type);
 
-    const data = await pdfParse(buffer as any);
+    return NextResponse.json({ text });
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : 'Failed to parse uploaded file';
 
-    return NextResponse.json({
-      text: data.text,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to parse PDF' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

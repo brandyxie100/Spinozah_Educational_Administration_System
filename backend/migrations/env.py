@@ -11,6 +11,10 @@ from app.infrastructure.persistence import models as _models  # noqa: F401
 from app.infrastructure.persistence import (
     student_models as _student_models,  # noqa: F401
 )
+from app.infrastructure.persistence import (
+    teacher_models as _teacher_models,  # noqa: F401
+)
+
 from app.infrastructure.persistence.base import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection

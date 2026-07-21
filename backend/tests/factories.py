@@ -7,9 +7,11 @@ import uuid
 import factory
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
 from app.infrastructure.persistence.student_models import StudentModel
+from app.infrastructure.persistence.teacher_models import TeacherModel
 
 
 class TenantFactory(factory.Factory):
+
     """Build a TenantModel with unique slug for multi-tenant tests."""
 
     class Meta:
@@ -43,4 +45,17 @@ class StudentFactory(factory.Factory):
     id = factory.LazyFunction(uuid.uuid4)
     full_name = factory.Sequence(lambda n: f"Student {n}")
     email = factory.Sequence(lambda n: f"student{n}@example.com")
+    is_active = True
+
+
+class TeacherFactory(factory.Factory):
+    """Build a TeacherModel; caller must set tenant_id before persistence."""
+
+    class Meta:
+        model = TeacherModel
+
+    id = factory.LazyFunction(uuid.uuid4)
+    full_name = factory.Sequence(lambda n: f"Teacher {n}")
+    email = factory.Sequence(lambda n: f"teacher{n}@example.com")
+    user_id = None
     is_active = True

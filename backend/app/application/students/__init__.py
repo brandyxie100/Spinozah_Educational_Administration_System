@@ -1,4 +1,4 @@
-"""Students application services."""
+"""Students & teachers application services."""
 
 from app.application.students.student_service import (
     StudentEmailConflictError,
@@ -6,10 +6,22 @@ from app.application.students.student_service import (
     StudentPage,
     StudentService,
 )
+from app.application.students.teacher_service import (
+    TeacherEmailConflictError,
+    TeacherNotFoundError,
+    TeacherPage,
+    TeacherService,
+    TeacherUserLinkError,
+)
 
 __all__ = [
     "StudentEmailConflictError",
     "StudentNotFoundError",
     "StudentPage",
     "StudentService",
+    "TeacherEmailConflictError",
+    "TeacherNotFoundError",
+    "TeacherPage",
+    "TeacherService",
+    "TeacherUserLinkError",
 ]

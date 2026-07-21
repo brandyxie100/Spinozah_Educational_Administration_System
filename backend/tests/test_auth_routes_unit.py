@@ -6,8 +6,6 @@ import uuid
 from collections.abc import Iterator
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app.api.v1.auth import get_auth_service
 from app.application.identity.auth_service import (
     AuthApplicationService,
@@ -16,6 +14,7 @@ from app.application.identity.auth_service import (
 )
 from app.domain.identity.exceptions import InvalidCredentialsError
 from app.main import create_app
+from fastapi.testclient import TestClient
 
 
 class _FakeAuthService:

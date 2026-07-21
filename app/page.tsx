@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { AdminDashboardContainer } from '@/components/admin/AdminDashboardContainer';
 import { BackButton } from '@/components/dashboard/BackButton';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 import { StudentListContainer } from '@/components/students/StudentListContainer';
@@ -11,6 +12,7 @@ export default function SpinozahEducationDashboard() {
   const goToDashboard = () => setActiveModule('Dashboard');
 
   const modules = [
+    { title: 'Admin Dashboard', icon: '📊', desc: 'Student/teacher KPIs, revenue, unpaid alerts' },
     { title: 'Teacher Timetable', icon: '🗓️', desc: '老师查看实时排课与课程更新' },
     { title: 'Student Management', icon: '👩‍🎓', desc: '学生录入、编辑、课时管理' },
     { title: 'Attendance & Leave', icon: '✅', desc: '系统到课后自动提醒老师确认消课，请假2次限制' },
@@ -21,6 +23,16 @@ export default function SpinozahEducationDashboard() {
     { title: 'Lesson Planning', icon: '🗂️', desc: '根据学生情况生成教学计划' },
     { title: 'University Pathway', icon: '🎓', desc: '根据成绩推荐大学和专业' },
   ];
+
+  if (activeModule === 'Admin Dashboard') {
+    return (
+      <div className="p-8 min-h-screen bg-slate-50">
+        <BackButton onBack={goToDashboard} />
+        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+        <AdminDashboardContainer />
+      </div>
+    );
+  }
 
   if (activeModule === 'Teacher Timetable') {
     return (

@@ -28,11 +28,7 @@ class SqlAlchemyTeacherRepository(SqlAlchemyTenantScopedRepository):
         page_size: int,
     ) -> tuple[list[TeacherModel], int]:
         """Return a page of teachers and the total count for the tenant."""
-        count_statement = self._scoped(
-            select(func.count()).select_from(TeacherModel),
-            TeacherModel,
-        )
-        total = int(await self._session.scalar(count_statement) or 0)
+        total = await self.count_all()
         offset = (page - 1) * page_size
         statement = (
             self._scoped(select(TeacherModel), TeacherModel)
@@ -42,6 +38,14 @@ class SqlAlchemyTeacherRepository(SqlAlchemyTenantScopedRepository):
         )
         result = await self._session.scalars(statement)
         return list(result.all()), total
+
+    async def count_all(self) -> int:
+        """Return the number of teachers in the bound tenant."""
+        count_statement = self._scoped(
+            select(func.count()).select_from(TeacherModel),
+            TeacherModel,
+        )
+        return int(await self._session.scalar(count_statement) or 0)
 
     async def get_by_id(self, teacher_id: UUID) -> TeacherModel | None:
         """Return a teacher by id if it belongs to the bound tenant."""

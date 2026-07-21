@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import cast
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domain.finance.entities import Invoice
@@ -14,7 +15,7 @@ from app.infrastructure.persistence.invoice_mapper import (
     invoice_to_model,
     model_to_invoice,
 )
-from app.infrastructure.persistence.invoice_models import InvoiceModel
+from app.infrastructure.persistence.invoice_models import InvoiceModel, PaymentStatusDB
 from app.infrastructure.persistence.tenant_scoped import (
     SqlAlchemyTenantScopedRepository,
 )
@@ -47,6 +48,36 @@ class SqlAlchemyInvoiceRepository(SqlAlchemyTenantScopedRepository):
         )
         result = await self._session.scalars(statement)
         return [model_to_invoice(model) for model in result.all()]
+
+    async def list_all(self) -> list[Invoice]:
+        """Return all invoices for the bound tenant (newest first)."""
+        statement = self._scoped(
+            select(InvoiceModel).order_by(InvoiceModel.created_at.desc()),
+            InvoiceModel,
+        )
+        result = await self._session.scalars(statement)
+        return [model_to_invoice(model) for model in result.all()]
+
+    async def count_by_status(self, status: PaymentStatusDB) -> int:
+        """Count invoices with the given payment status in this tenant."""
+        statement = self._scoped(
+            select(func.count())
+            .select_from(InvoiceModel)
+            .where(InvoiceModel.status == status),
+            InvoiceModel,
+        )
+        return int(await self._session.scalar(statement) or 0)
+
+    async def sum_final_amount_by_status(self, status: PaymentStatusDB) -> Decimal:
+        """Sum ``final_amount`` for invoices in the given status."""
+        statement = self._scoped(
+            select(func.coalesce(func.sum(InvoiceModel.final_amount), 0))
+            .select_from(InvoiceModel)
+            .where(InvoiceModel.status == status),
+            InvoiceModel,
+        )
+        result = await self._session.scalar(statement)
+        return Decimal(str(result or 0))
 
     async def add(self, invoice: Invoice) -> Invoice:
         """Persist a new invoice."""

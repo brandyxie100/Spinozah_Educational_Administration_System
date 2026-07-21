@@ -12,6 +12,9 @@ from app.infrastructure.persistence.student_models import (
     EnrolmentStatusDB,
     StudentModel,
 )
+from app.infrastructure.persistence.student_repository import (
+    SqlAlchemyStudentRepository,
+)
 from app.infrastructure.persistence.tenant_scoped import (
     SqlAlchemyTenantScopedRepository,
 )
@@ -21,6 +24,7 @@ __all__ = [
     "Base",
     "EnrolmentModel",
     "EnrolmentStatusDB",
+    "SqlAlchemyStudentRepository",
     "SqlAlchemyTenantScopedRepository",
     "SqlAlchemyUserRepository",
     "StudentModel",

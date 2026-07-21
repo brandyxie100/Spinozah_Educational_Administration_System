@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import get_token_service
 from app.api.v1.auth_schemas import (
     REFRESH_COOKIE_NAME,
     LoginRequest,
@@ -17,24 +17,11 @@ from app.api.v1.auth_schemas import (
 from app.application.identity.auth_service import AuthApplicationService, AuthTokens
 from app.core.settings import Settings, get_settings
 from app.domain.identity.exceptions import InvalidCredentialsError
-from app.domain.identity.tokens import AccessTokenClaims
 from app.infrastructure.persistence.session import get_session
 from app.infrastructure.security.bcrypt_password_hasher import BcryptPasswordHasher
 from app.infrastructure.security.jwt_token_service import JwtTokenService
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
-_bearer_scheme = HTTPBearer(auto_error=False)
-
-
-def get_token_service(
-    settings: Annotated[Settings, Depends(get_settings)],
-) -> JwtTokenService:
-    """Build the JWT service from application settings."""
-    return JwtTokenService(
-        secret=settings.jwt_secret,
-        access_expire_minutes=settings.jwt_access_expire_minutes,
-        refresh_expire_days=settings.jwt_refresh_expire_days,
-    )
 
 
 def get_auth_service(
@@ -149,25 +136,3 @@ async def logout(
 ) -> None:
     """Clear the refresh cookie (access token is client-discarded)."""
     _clear_refresh_cookie(response, settings)
-
-
-async def get_current_access_claims(
-    credentials: Annotated[
-        HTTPAuthorizationCredentials | None,
-        Depends(_bearer_scheme),
-    ],
-    token_service: Annotated[JwtTokenService, Depends(get_token_service)],
-) -> AccessTokenClaims:
-    """Decode Bearer access JWT — used by future RBAC middleware (AIJOB-36)."""
-    if credentials is None or credentials.scheme.lower() != "bearer":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-        )
-    try:
-        return token_service.decode_access_token(credentials.credentials)
-    except InvalidCredentialsError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=str(exc),
-        ) from exc

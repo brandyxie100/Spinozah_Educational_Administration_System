@@ -307,7 +307,7 @@ All AI endpoints return parseable JSON:
 |------|----------|
 | Passwords | bcrypt with appropriate cost factor |
 | API auth | Bearer JWT; short access TTL |
-| RBAC | `admin`, `frontdesk`, `teacher`, `parent` |
+| RBAC | `admin`, `frontdesk`, `teacher`, `parent` via `require_roles()` (`app.api.deps`) |
 | CORS | Explicit allowed origins in production |
 | Secrets | Environment variables only |
 | Dependencies | Regular `npm audit` / `pip-audit` in CI |

@@ -6,6 +6,7 @@ import uuid
 
 import factory
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
+from app.infrastructure.persistence.student_models import StudentModel
 
 
 class TenantFactory(factory.Factory):
@@ -30,4 +31,16 @@ class UserFactory(factory.Factory):
     full_name = factory.Sequence(lambda n: f"User {n}")
     hashed_password = "hashed-password-placeholder"
     role = UserRole.TEACHER
+    is_active = True
+
+
+class StudentFactory(factory.Factory):
+    """Build a StudentModel; caller must set tenant_id before persistence."""
+
+    class Meta:
+        model = StudentModel
+
+    id = factory.LazyFunction(uuid.uuid4)
+    full_name = factory.Sequence(lambda n: f"Student {n}")
+    email = factory.Sequence(lambda n: f"student{n}@example.com")
     is_active = True

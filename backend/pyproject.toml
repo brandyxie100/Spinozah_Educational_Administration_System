@@ -11,6 +11,7 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [
     "integration: requires a live PostgreSQL DATABASE_URL",
+    "tenant_isolation: verifies tenant_a cannot read tenant_b rows",
 ]
 
 [tool.ruff]

@@ -18,6 +18,9 @@ from app.infrastructure.persistence import (
 )
 from app.infrastructure.persistence import models as _models  # noqa: F401
 from app.infrastructure.persistence import (
+    parent_portal_models as _parent_portal_models,  # noqa: F401
+)
+from app.infrastructure.persistence import (
     schedule_models as _schedule_models,  # noqa: F401
 )
 from app.infrastructure.persistence import (

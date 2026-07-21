@@ -31,6 +31,15 @@ class SqlAlchemyScheduleRepository(SqlAlchemyTenantScopedRepository):
         result = await self._session.scalars(statement)
         return [model_to_schedule(row) for row in result.all()]
 
+    async def list_by_teacher_id(self, teacher_id: UUID) -> list[Schedule]:
+        """Return schedules for one teacher within the bound tenant."""
+        statement = self._scoped(
+            select(ScheduleModel).where(ScheduleModel.teacher_id == teacher_id),
+            ScheduleModel,
+        )
+        result = await self._session.scalars(statement)
+        return [model_to_schedule(row) for row in result.all()]
+
     async def add(self, schedule: Schedule) -> Schedule:
         """Persist a new schedule; enforces matching tenant_id."""
         if schedule.tenant_id != self._tenant_id:

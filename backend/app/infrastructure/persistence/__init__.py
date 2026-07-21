@@ -6,6 +6,9 @@ from app.infrastructure.persistence.schedule_models import (
     ScheduleModel,
     ScheduleStatusDB,
 )
+from app.infrastructure.persistence.schedule_repository import (
+    SqlAlchemyScheduleRepository,
+)
 from app.infrastructure.persistence.session import (
     create_engine,
     create_session_factory,
@@ -34,6 +37,7 @@ __all__ = [
     "EnrolmentStatusDB",
     "ScheduleModel",
     "ScheduleStatusDB",
+    "SqlAlchemyScheduleRepository",
     "SqlAlchemyStudentRepository",
     "SqlAlchemyTeacherRepository",
     "SqlAlchemyTenantScopedRepository",

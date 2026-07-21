@@ -22,6 +22,13 @@ export {
 } from '@/lib/api/students';
 
 export {
+  getAdminKpis,
+  type AdminKpis,
+  type RevenuePeriod,
+  type TodaySchedule,
+} from '@/lib/api/admin';
+
+export {
   getTeacherSchedule,
   listTeachers,
   type Teacher,

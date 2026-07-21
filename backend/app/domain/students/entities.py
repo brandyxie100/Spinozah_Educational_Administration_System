@@ -1,4 +1,7 @@
-"""Student and enrolment domain entities."""
+"""Student and enrolment domain entities.
+
+Teacher lives in ``app.domain.students.teacher`` (same bounded context).
+"""
 
 from __future__ import annotations
 

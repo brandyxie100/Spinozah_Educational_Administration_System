@@ -133,6 +133,33 @@ def calculate_remaining_lessons(
 | Config | Use `pydantic-settings`; no hardcoded secrets |
 | Exceptions | No bare `except:`; log and re-raise or map to domain errors |
 
+### 4.4.1 Multi-Tenant Repository Base
+
+Every tenant-owned aggregate repository MUST:
+
+1. Implement `app.domain.shared.repositories.TenantScopedRepository`
+2. Extend `SqlAlchemyTenantScopedRepository` in infrastructure
+3. Route **all** `select()` statements through `_scoped(statement, Model)` so
+   `tenant_id` cannot be omitted
+4. Ship a `test_tenant_a_cannot_see_tenant_b_data` case marked
+   `@pytest.mark.tenant_isolation`
+
+Reference implementations:
+
+- Domain contract: `backend/app/domain/shared/repositories.py`
+- SQLAlchemy base: `backend/app/infrastructure/persistence/tenant_scoped.py`
+- Example: `backend/app/infrastructure/persistence/user_repository.py`
+
+```python
+# Correct: every query goes through _scoped
+statement = self._scoped(select(UserModel), UserModel)
+
+# Incorrect: naked select without tenant filter — forbidden
+statement = select(UserModel)
+```
+
+Cross-tenant `get_by_id` MUST return `None` (not leak the foreign row).
+
 ### 4.5 File Naming (per entity)
 
 ```text

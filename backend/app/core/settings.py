@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     jwt_secret: str = "dev-only-change-me-use-secrets-token-urlsafe"
     jwt_access_expire_minutes: int = 15
     jwt_refresh_expire_days: int = 7
+    magic_link_expire_minutes: int = 15
+    magic_link_base_url: str = "http://localhost:3000/parent/magic-link"
     cors_origins: str = "http://localhost:3000"
 
     model_config = SettingsConfigDict(

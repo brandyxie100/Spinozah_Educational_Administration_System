@@ -25,6 +25,14 @@ from app.infrastructure.persistence.leave_repository import (
     SqlAlchemyLeaveRequestRepository,
 )
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
+from app.infrastructure.persistence.parent_portal_models import (
+    MagicLinkTokenModel,
+    ParentStudentLinkModel,
+)
+from app.infrastructure.persistence.parent_portal_repository import (
+    SqlAlchemyMagicLinkTokenRepository,
+    SqlAlchemyParentStudentLinkRepository,
+)
 from app.infrastructure.persistence.schedule_models import (
     ScheduleModel,
     ScheduleStatusDB,
@@ -64,6 +72,8 @@ __all__ = [
     "LeaveKindDB",
     "LeaveRequestModel",
     "LeaveStatusDB",
+    "MagicLinkTokenModel",
+    "ParentStudentLinkModel",
     "PaymentStatusDB",
     "ScheduleModel",
     "ScheduleStatusDB",
@@ -71,6 +81,8 @@ __all__ = [
     "SqlAlchemyEnrolmentRepository",
     "SqlAlchemyInvoiceRepository",
     "SqlAlchemyLeaveRequestRepository",
+    "SqlAlchemyMagicLinkTokenRepository",
+    "SqlAlchemyParentStudentLinkRepository",
     "SqlAlchemyScheduleRepository",
     "SqlAlchemyStudentRepository",
     "SqlAlchemyTeacherRepository",

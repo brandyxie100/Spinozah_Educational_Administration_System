@@ -2,6 +2,10 @@
 
 from app.infrastructure.persistence.base import Base
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
+from app.infrastructure.persistence.schedule_models import (
+    ScheduleModel,
+    ScheduleStatusDB,
+)
 from app.infrastructure.persistence.session import (
     create_engine,
     create_session_factory,
@@ -28,6 +32,8 @@ __all__ = [
     "Base",
     "EnrolmentModel",
     "EnrolmentStatusDB",
+    "ScheduleModel",
+    "ScheduleStatusDB",
     "SqlAlchemyStudentRepository",
     "SqlAlchemyTeacherRepository",
     "SqlAlchemyTenantScopedRepository",

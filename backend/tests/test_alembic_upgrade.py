@@ -16,7 +16,7 @@ BACKEND_ROOT = Path(__file__).resolve().parents[1]
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_alembic_upgrade_head_succeeds_on_clean_db() -> None:
-    """`alembic upgrade head` creates tenants/users on a clean database."""
+    """`alembic upgrade head` creates identity + student schema tables."""
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
         pytest.skip("DATABASE_URL not set; skipping live migration test")
@@ -34,10 +34,9 @@ async def test_alembic_upgrade_head_succeeds_on_clean_db() -> None:
 
     engine = create_async_engine(database_url)
     async with engine.connect() as connection:
-        tenants = await connection.execute(
-            text("SELECT to_regclass('public.tenants')"),
-        )
-        users = await connection.execute(text("SELECT to_regclass('public.users')"))
-        assert tenants.scalar() == "tenants"
-        assert users.scalar() == "users"
+        for table in ("tenants", "users", "students", "enrolments"):
+            found = await connection.execute(
+                text(f"SELECT to_regclass('public.{table}')"),
+            )
+            assert found.scalar() == table
     await engine.dispose()

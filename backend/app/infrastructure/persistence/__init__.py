@@ -7,6 +7,11 @@ from app.infrastructure.persistence.session import (
     create_session_factory,
     get_session,
 )
+from app.infrastructure.persistence.student_models import (
+    EnrolmentModel,
+    EnrolmentStatusDB,
+    StudentModel,
+)
 from app.infrastructure.persistence.tenant_scoped import (
     SqlAlchemyTenantScopedRepository,
 )
@@ -14,8 +19,11 @@ from app.infrastructure.persistence.user_repository import SqlAlchemyUserReposit
 
 __all__ = [
     "Base",
+    "EnrolmentModel",
+    "EnrolmentStatusDB",
     "SqlAlchemyTenantScopedRepository",
     "SqlAlchemyUserRepository",
+    "StudentModel",
     "TenantModel",
     "UserModel",
     "UserRole",

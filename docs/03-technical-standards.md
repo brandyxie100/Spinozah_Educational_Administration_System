@@ -17,7 +17,7 @@ This document provides a **comprehensive overview** of the full project technolo
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                        │
 │  Next.js 16 · React 19 · TypeScript 5 · Tailwind CSS 4      │
-│  TanStack Query (planned) · Zustand (optional)               │
+│  TanStack Query · Zustand (optional)                         │
 └───────────────────────────┬─────────────────────────────────┘
                             │ HTTPS / REST / JSON
 ┌───────────────────────────▼─────────────────────────────────┐
@@ -133,6 +133,33 @@ def calculate_remaining_lessons(
 | Config | Use `pydantic-settings`; no hardcoded secrets |
 | Exceptions | No bare `except:`; log and re-raise or map to domain errors |
 
+### 4.4.1 Multi-Tenant Repository Base
+
+Every tenant-owned aggregate repository MUST:
+
+1. Implement `app.domain.shared.repositories.TenantScopedRepository`
+2. Extend `SqlAlchemyTenantScopedRepository` in infrastructure
+3. Route **all** `select()` statements through `_scoped(statement, Model)` so
+   `tenant_id` cannot be omitted
+4. Ship a `test_tenant_a_cannot_see_tenant_b_data` case marked
+   `@pytest.mark.tenant_isolation`
+
+Reference implementations:
+
+- Domain contract: `backend/app/domain/shared/repositories.py`
+- SQLAlchemy base: `backend/app/infrastructure/persistence/tenant_scoped.py`
+- Example: `backend/app/infrastructure/persistence/user_repository.py`
+
+```python
+# Correct: every query goes through _scoped
+statement = self._scoped(select(UserModel), UserModel)
+
+# Incorrect: naked select without tenant filter — forbidden
+statement = select(UserModel)
+```
+
+Cross-tenant `get_by_id` MUST return `None` (not leak the foreign row).
+
 ### 4.5 File Naming (per entity)
 
 ```text
@@ -195,7 +222,7 @@ Use `factory_boy` — never hardcode entity construction in tests.
 | Container / Presenter | `StudentListContainer` + `StudentListView` |
 | Custom hooks | `useAuth()`, `useStudents()`, `useSchedule()` |
 | Providers | `AuthProvider`, `TenantProvider` via React Context |
-| Server state | TanStack Query — no ad-hoc `fetch` in components |
+| Server state | TanStack Query via `app/providers.tsx` — no ad-hoc `fetch` in page components; use `lib/api` |
 
 ### 5.4 Security (Frontend)
 

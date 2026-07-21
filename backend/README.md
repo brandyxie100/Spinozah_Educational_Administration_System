@@ -29,11 +29,10 @@ uvicorn app.main:app --reload --port 8000
 
 Health: http://localhost:8000/health
 
-## Database (AIJOB-29)
+## Verify
 
 ```bash
-# with Postgres running locally (or via Docker in AIJOB-30):
-export DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/spinozah
-cd backend
-alembic upgrade head
+# from repo root
+make backend-lint
+make backend-test
 ```

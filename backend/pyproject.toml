@@ -7,12 +7,6 @@ requires-python = ">=3.11"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-asyncio_mode = "auto"
-asyncio_default_fixture_loop_scope = "function"
-markers = [
-    "integration: requires a live PostgreSQL DATABASE_URL",
-    "tenant_isolation: verifies tenant_a cannot read tenant_b rows",
-]
 
 [tool.ruff]
 target-version = "py311"
@@ -27,4 +21,3 @@ python_version = "3.11"
 strict = true
 packages = ["app"]
 mypy_path = "."
-plugins = ["sqlalchemy.ext.mypy.plugin"]

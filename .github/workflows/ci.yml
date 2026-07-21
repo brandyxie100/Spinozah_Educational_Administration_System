@@ -97,20 +97,6 @@ jobs:
   backend-test:
     name: Backend tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: spinozah
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d spinozah"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -121,7 +107,5 @@ jobs:
       - name: Install backend dependencies
         run: pip install -r backend/requirements-dev.txt
       - name: Pytest with coverage
-        working-directory: backend
-        env:
-          DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/spinozah
         run: pytest tests/ --cov=app --cov-fail-under=80
+        working-directory: backend

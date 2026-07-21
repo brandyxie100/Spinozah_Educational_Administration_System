@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { BackButton } from '@/components/dashboard/BackButton';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
+import { StudentListContainer } from '@/components/students/StudentListContainer';
 
 export default function SpinozahEducationDashboard() {
   const [activeModule, setActiveModule] = useState('Dashboard');
@@ -40,10 +41,7 @@ export default function SpinozahEducationDashboard() {
       <div className="p-8 min-h-screen bg-slate-50">
         <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Student Management</h1>
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p>Students: Charlotte, Chace, Olivia, Zoe, Nemo</p>
-          <p>Manage enrolment, editing and remaining lessons.</p>
-        </div>
+        <StudentListContainer />
       </div>
     );
   }

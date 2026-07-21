@@ -5,5 +5,19 @@ from app.application.identity.auth_service import (
     AuthenticatedUser,
     AuthTokens,
 )
+from app.application.identity.user_service import (
+    UserEmailConflictError,
+    UserManagementService,
+    UserNotFoundError,
+    UserPage,
+)
 
-__all__ = ["AuthApplicationService", "AuthTokens", "AuthenticatedUser"]
+__all__ = [
+    "AuthApplicationService",
+    "AuthTokens",
+    "AuthenticatedUser",
+    "UserEmailConflictError",
+    "UserManagementService",
+    "UserNotFoundError",
+    "UserPage",
+]

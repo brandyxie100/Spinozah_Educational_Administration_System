@@ -4,12 +4,21 @@ export { analyzeExamText } from './analyzer';
 export type { AnalyzeExamTextOptions } from './analyzer';
 export { analyzeEssayText } from './essay-analyzer';
 export type { AnalyzeEssayTextOptions } from './essay-analyzer';
+export { generateCambridgeTeachingPlan } from './cambridge-plan-analyzer';
+export type { GenerateCambridgePlanOptions } from './cambridge-plan-analyzer';
 export {
   EXAM_ANALYSIS_MODEL,
   EXTRACTED_TEXT_PREVIEW_MAX_LENGTH,
   SUPPORTED_IMAGE_MIME_TYPES,
   SUPPORTED_MIME_TYPES,
 } from './constants';
+export {
+  buildCambridgePlanUserPrompt,
+  buildMockCambridgeTeachingPlan,
+  CAMBRIDGE_PLAN_MODEL,
+  CAMBRIDGE_PLAN_SYSTEM_PROMPT,
+} from './cambridge-plan-prompts';
+export type { CambridgePlanPromptInput } from './cambridge-plan-prompts';
 export {
   buildEssayAnalysisUserPrompt,
   buildEssayTextPreview,
@@ -18,6 +27,17 @@ export {
   ESSAY_ANALYSIS_SYSTEM_PROMPT,
 } from './essay-prompts';
 export { buildEssayReportPdfBytes } from './essay-pdf';
+export {
+  cambridgeCurriculumSchema,
+  cambridgeLessonSchema,
+  cambridgeTeachingPlanSchema,
+  parseCambridgeTeachingPlan,
+} from './cambridge-plan-schema';
+export type {
+  CambridgeCurriculum,
+  CambridgeLesson,
+  CambridgeTeachingPlan,
+} from './cambridge-plan-schema';
 export {
   essayAnalysisAiPayloadSchema,
   essayAnalysisReportSchema,

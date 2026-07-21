@@ -1,0 +1,23 @@
+[project]
+name = "spinozah-backend"
+version = "0.1.0"
+description = "Spinozah AI Education FastAPI backend"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+src = ["app", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["app"]
+mypy_path = "."

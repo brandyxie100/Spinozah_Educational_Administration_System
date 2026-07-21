@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
 from uuid import UUID
@@ -78,6 +79,8 @@ class JwtTokenService:
             "email": claims.email,
             "role": claims.role,
             "type": token_type.value,
+            # Unique id so tokens minted in the same second still differ.
+            "jti": str(uuid.uuid4()),
             "iat": issued_at,
             "exp": expires,
         }

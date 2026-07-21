@@ -11,6 +11,9 @@ from app.infrastructure.persistence import (
     attendance_models as _attendance_models,  # noqa: F401
 )
 from app.infrastructure.persistence import (
+    invoice_models as _invoice_models,  # noqa: F401
+)
+from app.infrastructure.persistence import (
     leave_models as _leave_models,  # noqa: F401
 )
 from app.infrastructure.persistence import models as _models  # noqa: F401

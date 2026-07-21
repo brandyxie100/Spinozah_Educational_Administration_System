@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.health import router as health_router
 from app.api.v1.attendance import router as attendance_router
 from app.api.v1.auth import router as auth_router
+from app.api.v1.invoices import router as invoices_router
 from app.api.v1.rbac_routes import router as rbac_router
 from app.api.v1.schedules import router as schedules_router
 from app.api.v1.students import router as students_router
@@ -44,6 +45,7 @@ def create_app() -> FastAPI:
     application.include_router(teachers_router)
     application.include_router(schedules_router)
     application.include_router(attendance_router)
+    application.include_router(invoices_router)
     return application
 
 

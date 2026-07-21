@@ -2,6 +2,7 @@
 
 import React from 'react';
 import type { ExamAnalysisReport } from '@/lib/ai-analysis';
+import { ApiError, apiRequest } from '@/lib/api';
 
 interface UseExamAnalysisResult {
   report: ExamAnalysisReport | null;
@@ -37,28 +38,22 @@ export function useExamAnalysis(): UseExamAnalysisResult {
     formData.append('file', file);
 
     try {
-      const response = await fetch('/api/ai/exams/analyze', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const payload: ExamAnalysisReport | { error?: string } =
-        await response.json();
-
-      if (!response.ok) {
-        const message =
-          'error' in payload && payload.error
-            ? payload.error
-            : 'Failed to analyze exam';
-        throw new Error(message);
-      }
-
-      const analysisReport = payload as ExamAnalysisReport;
+      const analysisReport = await apiRequest<ExamAnalysisReport>(
+        '/api/ai/exams/analyze',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
       setReport(analysisReport);
       setExtractedPreview(analysisReport.extractedTextPreview);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Failed to analyze exam';
+        err instanceof ApiError
+          ? err.message
+          : err instanceof Error
+            ? err.message
+            : 'Failed to analyze exam';
       setError(message);
     } finally {
       setIsAnalyzing(false);

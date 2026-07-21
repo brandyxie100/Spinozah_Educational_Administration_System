@@ -17,7 +17,7 @@ This document provides a **comprehensive overview** of the full project technolo
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                        │
 │  Next.js 16 · React 19 · TypeScript 5 · Tailwind CSS 4      │
-│  TanStack Query (planned) · Zustand (optional)               │
+│  TanStack Query · Zustand (optional)                         │
 └───────────────────────────┬─────────────────────────────────┘
                             │ HTTPS / REST / JSON
 ┌───────────────────────────▼─────────────────────────────────┐
@@ -222,7 +222,7 @@ Use `factory_boy` — never hardcode entity construction in tests.
 | Container / Presenter | `StudentListContainer` + `StudentListView` |
 | Custom hooks | `useAuth()`, `useStudents()`, `useSchedule()` |
 | Providers | `AuthProvider`, `TenantProvider` via React Context |
-| Server state | TanStack Query — no ad-hoc `fetch` in components |
+| Server state | TanStack Query via `app/providers.tsx` — no ad-hoc `fetch` in page components; use `lib/api` |
 
 ### 5.4 Security (Frontend)
 

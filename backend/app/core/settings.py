@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     database_url: str = (
         "postgresql+asyncpg://postgres:postgres@localhost:5432/spinozah"
     )
+    jwt_secret: str = "dev-only-change-me-use-secrets-token-urlsafe"
+    jwt_access_expire_minutes: int = 15
+    jwt_refresh_expire_days: int = 7
+    cors_origins: str = "http://localhost:3000"
 
     model_config = SettingsConfigDict(
         env_file=".env",

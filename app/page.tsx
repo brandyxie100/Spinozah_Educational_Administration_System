@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { BackButton } from '@/components/dashboard/BackButton';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 import { StudentListContainer } from '@/components/students/StudentListContainer';
+import { TeacherTimetableContainer } from '@/components/timetable/TeacherTimetableContainer';
 
 export default function SpinozahEducationDashboard() {
   const [activeModule, setActiveModule] = useState('Dashboard');
@@ -26,12 +27,7 @@ export default function SpinozahEducationDashboard() {
       <div className="p-8 min-h-screen bg-slate-50">
         <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Teacher Timetable</h1>
-        <div className="bg-white p-6 rounded-xl shadow space-y-3">
-          <p>Wednesday Schedule</p>
-          <p>4:00 PM | Max | Charlotte | In Class</p>
-          <p>5:00 PM | Ryan | Chace | Absent - Remind Parent</p>
-          <p>6:00 PM | Ray | Olivia | Starting Soon</p>
-        </div>
+        <TeacherTimetableContainer />
       </div>
     );
   }

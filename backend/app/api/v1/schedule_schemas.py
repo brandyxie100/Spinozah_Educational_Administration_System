@@ -45,3 +45,25 @@ class ScheduleOut(BaseModel):
     is_recurring: bool
     recurrence_weekday: int | None
     recurrence_until: date | None
+
+
+class TeacherScheduleSlotOut(BaseModel):
+    """One expanded lesson occurrence on a teacher timetable."""
+
+    schedule_id: UUID
+    student_id: UUID
+    student_name: str | None
+    classroom: str | None
+    starts_at: datetime
+    ends_at: datetime
+    status: str
+    display_status: str
+
+
+class TeacherScheduleResponse(BaseModel):
+    """Teacher timetable for a date range."""
+
+    teacher_id: UUID
+    range_start: date
+    range_end: date
+    items: list[TeacherScheduleSlotOut]

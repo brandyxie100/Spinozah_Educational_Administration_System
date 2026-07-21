@@ -6,6 +6,7 @@ from app.domain.scheduling.conflict_detection import (
     ScheduleConflict,
     intervals_overlap,
 )
+from app.domain.scheduling.display_status import DisplayStatus, resolve_display_status
 from app.domain.scheduling.entities import (
     Schedule,
     ScheduleStatus,
@@ -17,6 +18,7 @@ from app.domain.scheduling.entities import (
 __all__ = [
     "ConflictDetectionService",
     "ConflictKind",
+    "DisplayStatus",
     "Schedule",
     "ScheduleConflict",
     "ScheduleStatus",
@@ -24,4 +26,5 @@ __all__ = [
     "Weekday",
     "WeeklyRecurrence",
     "intervals_overlap",
+    "resolve_display_status",
 ]

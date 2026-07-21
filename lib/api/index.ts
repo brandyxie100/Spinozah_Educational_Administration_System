@@ -20,3 +20,13 @@ export {
   type StudentListResponse,
   type StudentUpdateInput,
 } from '@/lib/api/students';
+
+export {
+  getTeacherSchedule,
+  listTeachers,
+  type Teacher,
+  type TeacherListResponse,
+  type TeacherScheduleResponse,
+  type TeacherScheduleSlot,
+  type TimetableDisplayStatus,
+} from '@/lib/api/teachers';

@@ -46,6 +46,7 @@ def enrolment_to_model(enrolment: Enrolment) -> EnrolmentModel:
         student_id=enrolment.student_id,
         total_lessons=enrolment.total_lessons,
         completed_lessons=enrolment.completed_lessons,
+        extension_days=enrolment.extension_days,
         status=EnrolmentStatusDB(enrolment.status.value),
     )
 
@@ -58,6 +59,7 @@ def model_to_enrolment(model: EnrolmentModel) -> Enrolment:
         student_id=model.student_id,
         total_lessons=model.total_lessons,
         completed_lessons=model.completed_lessons,
+        extension_days=model.extension_days,
         status=EnrolmentStatus(model.status.value),
     )
 
@@ -66,4 +68,5 @@ def apply_enrolment_to_model(model: EnrolmentModel, enrolment: Enrolment) -> Non
     """Copy mutable enrolment fields onto an existing ORM row."""
     model.total_lessons = enrolment.total_lessons
     model.completed_lessons = enrolment.completed_lessons
+    model.extension_days = enrolment.extension_days
     model.status = EnrolmentStatusDB(enrolment.status.value)

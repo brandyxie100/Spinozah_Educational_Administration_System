@@ -27,6 +27,8 @@ class Enrolment:
     total_lessons: int
     completed_lessons: int = 0
     status: EnrolmentStatus = EnrolmentStatus.ACTIVE
+    # Extra calendar days added when non-free leaves are approved.
+    extension_days: int = 0
     id: UUID = field(default_factory=uuid4)
 
     def __post_init__(self) -> None:
@@ -37,6 +39,8 @@ class Enrolment:
             raise ValueError("completed_lessons must be non-negative")
         if self.completed_lessons > self.total_lessons:
             raise ValueError("completed_lessons cannot exceed total_lessons")
+        if self.extension_days < 0:
+            raise ValueError("extension_days must be non-negative")
 
     def remaining_lessons(self) -> int:
         """Return lessons still available on this enrolment."""
@@ -51,6 +55,14 @@ class Enrolment:
         self.completed_lessons += 1
         if self.remaining_lessons() == 0:
             self.status = EnrolmentStatus.COMPLETED
+
+    def extend_semester(self, days: int) -> None:
+        """Extend course duration after a non-free leave is approved."""
+        if days <= 0:
+            raise ValueError("extension days must be positive")
+        if self.status != EnrolmentStatus.ACTIVE:
+            raise ValueError("Only active enrolments can be extended")
+        self.extension_days += days
 
 
 @dataclass(slots=True)

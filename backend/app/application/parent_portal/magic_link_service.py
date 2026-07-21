@@ -12,11 +12,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.application.identity.auth_service import AuthenticatedUser, AuthTokens
+from app.application.parent_portal.dashboard_models import (
+    EnrolmentNotFoundError,
+    ParentEnrolmentView,
+    ParentInvoiceNotFoundError,
+    ParentStudentNotLinkedError,
+    StudentDashboardReport,
+)
+from app.domain.attendance.entities import AttendanceRecord
+from app.domain.finance.entities import Invoice, PaymentStatus
 from app.domain.identity.exceptions import InvalidCredentialsError
 from app.domain.identity.token_service import TokenService
 from app.domain.identity.tokens import AccessTokenClaims
 from app.domain.parent_portal.entities import MagicLinkToken, ParentStudentLink
 from app.infrastructure.email.magic_link_mailer import MagicLinkMailer
+from app.infrastructure.pdf.invoice_pdf import InvoicePdfGenerator
+from app.infrastructure.persistence.attendance_repository import (
+    SqlAlchemyAttendanceRepository,
+    SqlAlchemyEnrolmentRepository,
+)
+from app.infrastructure.persistence.invoice_repository import (
+    SqlAlchemyInvoiceRepository,
+)
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
 from app.infrastructure.persistence.parent_portal_repository import (
     SqlAlchemyMagicLinkTokenRepository,
@@ -210,6 +227,165 @@ class ParentPortalService:
             )
         return summaries
 
+    async def get_student_enrolment(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+    ) -> ParentEnrolmentView:
+        """Return active enrolment and remaining lessons for a linked student."""
+        await self._assert_student_linked(
+            tenant_id=tenant_id,
+            parent_user_id=parent_user_id,
+            student_id=student_id,
+        )
+        enrolment = await SqlAlchemyEnrolmentRepository(
+            self._session,
+            tenant_id,
+        ).get_active_for_student(student_id)
+        if enrolment is None:
+            raise EnrolmentNotFoundError(
+                f"No active enrolment for student: {student_id}",
+            )
+        return ParentEnrolmentView(
+            enrolment=enrolment,
+            remaining_lessons=enrolment.remaining_lessons(),
+        )
+
+    async def list_student_attendance(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+    ) -> list[AttendanceRecord]:
+        """Return attendance history for a linked student only."""
+        await self._assert_student_linked(
+            tenant_id=tenant_id,
+            parent_user_id=parent_user_id,
+            student_id=student_id,
+        )
+        return await SqlAlchemyAttendanceRepository(
+            self._session,
+            tenant_id,
+        ).list_by_student_id(student_id)
+
+    async def list_student_invoices(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+    ) -> list[Invoice]:
+        """Return invoices for a linked student only."""
+        await self._assert_student_linked(
+            tenant_id=tenant_id,
+            parent_user_id=parent_user_id,
+            student_id=student_id,
+        )
+        return await SqlAlchemyInvoiceRepository(
+            self._session,
+            tenant_id,
+        ).list_by_student_id(student_id)
+
+    async def get_student_invoice(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+        invoice_id: UUID,
+    ) -> Invoice:
+        """Return one invoice belonging to a linked student."""
+        await self._assert_student_linked(
+            tenant_id=tenant_id,
+            parent_user_id=parent_user_id,
+            student_id=student_id,
+        )
+        invoice = await SqlAlchemyInvoiceRepository(
+            self._session,
+            tenant_id,
+        ).get_by_id(invoice_id)
+        if invoice is None or invoice.student_id != student_id:
+            raise ParentInvoiceNotFoundError(f"Invoice not found: {invoice_id}")
+        return invoice
+
+    async def render_student_invoice_pdf(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+        invoice_id: UUID,
+    ) -> bytes:
+        """Export a linked student's invoice as PDF bytes."""
+        invoice = await self.get_student_invoice(
+            tenant_id=tenant_id,
+            parent_user_id=parent_user_id,
+            student_id=student_id,
+            invoice_id=invoice_id,
+        )
+        students = SqlAlchemyStudentRepository(self._session, tenant_id)
+        student = await students.get_by_id(student_id)
+        student_name = student.full_name if student is not None else "Unknown student"
+        return InvoicePdfGenerator().render(invoice, student_name=student_name)
+
+    async def get_student_dashboard_report(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+    ) -> StudentDashboardReport:
+        """Aggregate remaining lessons, attendance, and invoice totals."""
+        await self._assert_student_linked(
+            tenant_id=tenant_id,
+            parent_user_id=parent_user_id,
+            student_id=student_id,
+        )
+        enrolment = await SqlAlchemyEnrolmentRepository(
+            self._session,
+            tenant_id,
+        ).get_active_for_student(student_id)
+        attendance = await SqlAlchemyAttendanceRepository(
+            self._session,
+            tenant_id,
+        ).list_by_student_id(student_id)
+        invoices = await SqlAlchemyInvoiceRepository(
+            self._session,
+            tenant_id,
+        ).list_by_student_id(student_id)
+        unpaid = sum(1 for inv in invoices if inv.status == PaymentStatus.UNPAID)
+        return StudentDashboardReport(
+            student_id=student_id,
+            remaining_lessons=(
+                enrolment.remaining_lessons() if enrolment is not None else None
+            ),
+            total_lessons=enrolment.total_lessons if enrolment is not None else None,
+            completed_lessons=(
+                enrolment.completed_lessons if enrolment is not None else None
+            ),
+            attendance_count=len(attendance),
+            invoice_count=len(invoices),
+            unpaid_invoice_count=unpaid,
+        )
+
+    async def _assert_student_linked(
+        self,
+        *,
+        tenant_id: UUID,
+        parent_user_id: UUID,
+        student_id: UUID,
+    ) -> None:
+        """Raise when the parent is not linked to ``student_id`` in this tenant."""
+        link_repo = SqlAlchemyParentStudentLinkRepository(self._session, tenant_id)
+        linked_ids = await link_repo.list_student_ids_for_parent(parent_user_id)
+        if student_id not in linked_ids:
+            raise ParentStudentNotLinkedError(
+                f"Student not linked to parent: {student_id}",
+            )
+
     def _issue_tokens(self, user: UserModel) -> AuthTokens:
         claims = AccessTokenClaims(
             user_id=user.id,
@@ -252,10 +428,15 @@ class ParentPortalService:
 
 __all__ = [
     "CaptureMagicLinkMailer",
+    "EnrolmentNotFoundError",
     "LinkedStudentSummary",
     "MagicLinkRequestResult",
     "NotAParentError",
+    "ParentEnrolmentView",
+    "ParentInvoiceNotFoundError",
     "ParentNotFoundError",
     "ParentPortalService",
+    "ParentStudentNotLinkedError",
+    "StudentDashboardReport",
     "StudentNotFoundError",
 ]

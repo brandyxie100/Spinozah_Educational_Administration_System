@@ -56,6 +56,17 @@ class SqlAlchemyAttendanceRepository(SqlAlchemyTenantScopedRepository):
         model = cast(AttendanceModel | None, result)
         return model_to_attendance(model) if model is not None else None
 
+    async def list_by_student_id(self, student_id: UUID) -> list[AttendanceRecord]:
+        """Return all attendance rows for a student in this tenant."""
+        statement = self._scoped(
+            select(AttendanceModel)
+            .where(AttendanceModel.student_id == student_id)
+            .order_by(AttendanceModel.created_at.desc()),
+            AttendanceModel,
+        )
+        result = await self._session.scalars(statement)
+        return [model_to_attendance(model) for model in result.all()]
+
     async def add(self, record: AttendanceRecord) -> AttendanceRecord:
         """Persist a new attendance record."""
         if record.tenant_id != self._tenant_id:

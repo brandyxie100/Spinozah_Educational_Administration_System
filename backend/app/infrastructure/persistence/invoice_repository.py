@@ -37,6 +37,17 @@ class SqlAlchemyInvoiceRepository(SqlAlchemyTenantScopedRepository):
         model = cast(InvoiceModel | None, result)
         return model_to_invoice(model) if model is not None else None
 
+    async def list_by_student_id(self, student_id: UUID) -> list[Invoice]:
+        """Return invoices for a student in this tenant (newest first)."""
+        statement = self._scoped(
+            select(InvoiceModel)
+            .where(InvoiceModel.student_id == student_id)
+            .order_by(InvoiceModel.created_at.desc()),
+            InvoiceModel,
+        )
+        result = await self._session.scalars(statement)
+        return [model_to_invoice(model) for model in result.all()]
+
     async def add(self, invoice: Invoice) -> Invoice:
         """Persist a new invoice."""
         if invoice.tenant_id != self._tenant_id:

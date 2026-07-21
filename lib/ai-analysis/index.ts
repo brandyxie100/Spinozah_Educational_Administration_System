@@ -6,6 +6,8 @@ export { analyzeEssayText } from './essay-analyzer';
 export type { AnalyzeEssayTextOptions } from './essay-analyzer';
 export { generateCambridgeTeachingPlan } from './cambridge-plan-analyzer';
 export type { GenerateCambridgePlanOptions } from './cambridge-plan-analyzer';
+export { generateUniversityPathway } from './university-pathway-analyzer';
+export type { GenerateUniversityPathwayOptions } from './university-pathway-analyzer';
 export {
   EXAM_ANALYSIS_MODEL,
   EXTRACTED_TEXT_PREVIEW_MAX_LENGTH,
@@ -19,6 +21,13 @@ export {
   CAMBRIDGE_PLAN_SYSTEM_PROMPT,
 } from './cambridge-plan-prompts';
 export type { CambridgePlanPromptInput } from './cambridge-plan-prompts';
+export {
+  buildMockPathwayRecommendation,
+  buildUniversityPathwayUserPrompt,
+  UNIVERSITY_PATHWAY_MODEL,
+  UNIVERSITY_PATHWAY_SYSTEM_PROMPT,
+} from './university-pathway-prompts';
+export type { UniversityPathwayPromptInput } from './university-pathway-prompts';
 export {
   buildEssayAnalysisUserPrompt,
   buildEssayTextPreview,
@@ -38,6 +47,23 @@ export type {
   CambridgeLesson,
   CambridgeTeachingPlan,
 } from './cambridge-plan-schema';
+export {
+  pathwayQualificationSchema,
+  pathwayRecommendationSchema,
+  pathwayRegionSchema,
+  parsePathwayRecommendation,
+  rankedMajorSchema,
+  rankedUniversitySchema,
+  subjectGradeSchema,
+} from './university-pathway-schema';
+export type {
+  PathwayQualification,
+  PathwayRecommendation,
+  PathwayRegion,
+  RankedMajor,
+  RankedUniversity,
+  SubjectGrade,
+} from './university-pathway-schema';
 export {
   essayAnalysisAiPayloadSchema,
   essayAnalysisReportSchema,

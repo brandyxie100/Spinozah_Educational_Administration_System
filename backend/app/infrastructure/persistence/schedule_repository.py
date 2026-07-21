@@ -40,6 +40,17 @@ class SqlAlchemyScheduleRepository(SqlAlchemyTenantScopedRepository):
         result = await self._session.scalars(statement)
         return [model_to_schedule(row) for row in result.all()]
 
+    async def get_by_id(self, schedule_id: UUID) -> Schedule | None:
+        """Return a schedule by id if it belongs to the bound tenant."""
+        statement = self._scoped(
+            select(ScheduleModel).where(ScheduleModel.id == schedule_id),
+            ScheduleModel,
+        )
+        result = await self._session.scalar(statement)
+        if result is None:
+            return None
+        return model_to_schedule(result)
+
     async def add(self, schedule: Schedule) -> Schedule:
         """Persist a new schedule; enforces matching tenant_id."""
         if schedule.tenant_id != self._tenant_id:

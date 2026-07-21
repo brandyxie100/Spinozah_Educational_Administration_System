@@ -9,6 +9,12 @@ from app.application.attendance.attendance_service import (
     EnrolmentNotFoundError,
     ScheduleNotFoundForAttendanceError,
 )
+from app.application.attendance.leave_service import (
+    LeaveEnrolmentNotFoundError,
+    LeaveNotFoundError,
+    LeaveService,
+    LeaveStudentNotFoundError,
+)
 
 __all__ = [
     "AttendanceConflictError",
@@ -17,5 +23,9 @@ __all__ = [
     "AttendanceService",
     "ConfirmOutcome",
     "EnrolmentNotFoundError",
+    "LeaveEnrolmentNotFoundError",
+    "LeaveNotFoundError",
+    "LeaveService",
+    "LeaveStudentNotFoundError",
     "ScheduleNotFoundForAttendanceError",
 ]

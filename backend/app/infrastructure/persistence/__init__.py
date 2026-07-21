@@ -9,6 +9,14 @@ from app.infrastructure.persistence.attendance_repository import (
     SqlAlchemyEnrolmentRepository,
 )
 from app.infrastructure.persistence.base import Base
+from app.infrastructure.persistence.leave_models import (
+    LeaveKindDB,
+    LeaveRequestModel,
+    LeaveStatusDB,
+)
+from app.infrastructure.persistence.leave_repository import (
+    SqlAlchemyLeaveRequestRepository,
+)
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
 from app.infrastructure.persistence.schedule_models import (
     ScheduleModel,
@@ -45,10 +53,14 @@ __all__ = [
     "Base",
     "EnrolmentModel",
     "EnrolmentStatusDB",
+    "LeaveKindDB",
+    "LeaveRequestModel",
+    "LeaveStatusDB",
     "ScheduleModel",
     "ScheduleStatusDB",
     "SqlAlchemyAttendanceRepository",
     "SqlAlchemyEnrolmentRepository",
+    "SqlAlchemyLeaveRequestRepository",
     "SqlAlchemyScheduleRepository",
     "SqlAlchemyStudentRepository",
     "SqlAlchemyTeacherRepository",

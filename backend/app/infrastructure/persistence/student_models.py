@@ -83,6 +83,11 @@ class EnrolmentModel(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         nullable=False,
         default=0,
     )
+    extension_days: Mapped[int] = mapped_column(
+        Integer(),
+        nullable=False,
+        default=0,
+    )
     status: Mapped[EnrolmentStatusDB] = mapped_column(
         Enum(
             EnrolmentStatusDB,

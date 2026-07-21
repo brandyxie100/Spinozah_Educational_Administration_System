@@ -5,3 +5,7 @@ from __future__ import annotations
 
 class InvalidCredentialsError(Exception):
     """Raised when login or token validation fails."""
+
+
+class InsufficientPermissionsError(Exception):
+    """Raised when the authenticated role cannot access a resource."""

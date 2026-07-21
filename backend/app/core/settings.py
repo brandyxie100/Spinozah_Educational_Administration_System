@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     app_name: str = "Spinozah AI Education API"
     environment: str = "development"
     debug: bool = False
+    database_url: str = (
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/spinozah"
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

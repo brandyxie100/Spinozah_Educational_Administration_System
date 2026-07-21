@@ -10,3 +10,13 @@ export {
   resolveApiUrl,
   setAccessTokenProvider,
 } from '@/lib/api/client';
+
+export {
+  createStudent,
+  listStudents,
+  updateStudent,
+  type Student,
+  type StudentCreateInput,
+  type StudentListResponse,
+  type StudentUpdateInput,
+} from '@/lib/api/students';

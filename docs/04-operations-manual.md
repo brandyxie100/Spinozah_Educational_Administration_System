@@ -114,12 +114,30 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4.6 Start Database (Target)
+### 4.6 Start Database
 
-Using Docker Compose (when `docker-compose.yml` is added):
+Using Docker Compose (Postgres 15):
 
 ```bash
+# from repository root
 docker compose up -d db
+```
+
+This starts the `db` service only (named volume `spinozah_pgdata`, port `5432`).
+
+Credentials (local default):
+
+| Variable | Value |
+|----------|-------|
+| User | `postgres` |
+| Password | `postgres` |
+| Database | `spinozah` |
+| URL | `postgresql+asyncpg://postgres:postgres@localhost:5432/spinozah` |
+
+Optional API container (after migrations):
+
+```bash
+docker compose --profile api up -d --build
 ```
 
 Or standalone PostgreSQL:

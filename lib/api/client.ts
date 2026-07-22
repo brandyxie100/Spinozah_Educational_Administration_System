@@ -118,3 +118,36 @@ export async function apiRequest<T>(
 
   return body as T;
 }
+
+/**
+ * Perform an authenticated request and return a Blob (e.g. PDF download).
+ */
+export async function apiRequestBlob(
+  path: string,
+  init: RequestInit = {},
+): Promise<Blob> {
+  const headers = new Headers(init.headers);
+  const token = await accessTokenProvider();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const response = await fetch(resolveApiUrl(path), {
+    ...init,
+    headers,
+  });
+
+  if (!response.ok) {
+    let body: unknown = null;
+    const contentType = response.headers.get('content-type') ?? '';
+    if (contentType.includes('application/json')) {
+      body = await response.json();
+    } else {
+      const text = await response.text();
+      body = text.length > 0 ? text : null;
+    }
+    throw new ApiError(messageFromBody(body, response.status), response.status, body);
+  }
+
+  return response.blob();
+}

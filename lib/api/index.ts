@@ -5,6 +5,7 @@
 export {
   ApiError,
   apiRequest,
+  apiRequestBlob,
   getApiBaseUrl,
   resetAccessTokenProviderForTests,
   resolveApiUrl,
@@ -53,3 +54,14 @@ export {
   type LeaveRequestCreateInput,
   type LeaveUsage,
 } from '@/lib/api/attendance';
+
+export {
+  createInvoice,
+  downloadInvoicePdf,
+  listInvoices,
+  updateInvoicePaymentStatus,
+  type Invoice,
+  type InvoiceCreateInput,
+  type InvoiceLineItem,
+  type PaymentStatus,
+} from '@/lib/api/invoices';

@@ -5,6 +5,7 @@ import { AdminDashboardContainer } from '@/components/admin/AdminDashboardContai
 import { BackButton } from '@/components/dashboard/BackButton';
 import { EssayAnalysisPanel } from '@/components/essay-analysis/EssayAnalysisPanel';
 import { AttendanceLeaveContainer } from '@/components/attendance/AttendanceLeaveContainer';
+import { InvoiceListContainer } from '@/components/finance/InvoiceListContainer';
 import { LessonPlanPanel } from '@/components/lesson-planning/LessonPlanPanel';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
@@ -95,9 +96,7 @@ export default function SpinozahEducationDashboard() {
       <div className="p-8 min-h-screen bg-slate-50">
         <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Finance & Invoice</h1>
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p>Next invoice auto-generated for Term 3.</p>
-        </div>
+        <InvoiceListContainer />
       </div>
     );
   }

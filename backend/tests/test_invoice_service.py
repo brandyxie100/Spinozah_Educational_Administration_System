@@ -27,6 +27,12 @@ class _FakeInvoiceRepo:
         self._rows[invoice.id] = invoice
         return invoice
 
+    async def list_all(self) -> list[Invoice]:
+        return list(self._rows.values())
+
+    async def list_by_student_id(self, student_id: uuid.UUID) -> list[Invoice]:
+        return [row for row in self._rows.values() if row.student_id == student_id]
+
     async def save(self, invoice: Invoice) -> Invoice:
         self._rows[invoice.id] = invoice
         return invoice
@@ -104,6 +110,38 @@ async def test_get_invoice_missing_raises() -> None:
     )
     with pytest.raises(InvoiceNotFoundError):
         await service.get_invoice(uuid.uuid4())
+
+
+@pytest.mark.asyncio
+async def test_list_invoices_filters_by_student() -> None:
+    tenant_id = uuid.uuid4()
+    student_a = uuid.uuid4()
+    student_b = uuid.uuid4()
+    repo = _FakeInvoiceRepo(tenant_id)
+    service = InvoiceService(
+        invoice_repository=repo,
+        student_repository=_FakeStudentRepo(student_a),
+    )
+    # Allow create for student_a only via student repo; insert B directly.
+    await service.create_invoice(
+        student_id=student_a,
+        semester_label="2026-S1",
+        subtotal=Decimal("100.00"),
+    )
+    other = Invoice(
+        tenant_id=tenant_id,
+        student_id=student_b,
+        semester_label="2026-S1",
+        subtotal=Decimal("200.00"),
+        credit=Decimal("0.00"),
+    )
+    await repo.add(other)
+
+    all_rows = await service.list_invoices()
+    assert len(all_rows) == 2
+    filtered = await service.list_invoices(student_id=student_a)
+    assert len(filtered) == 1
+    assert filtered[0].student_id == student_a
 
 
 @pytest.mark.asyncio

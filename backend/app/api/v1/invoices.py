@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import require_roles
@@ -92,6 +92,16 @@ async def create_invoice(
             detail=str(exc),
         ) from exc
     return _to_out(invoice)
+
+
+@router.get("", response_model=list[InvoiceOut])
+async def list_invoices(
+    service: Annotated[InvoiceService, Depends(get_invoice_service)],
+    student_id: Annotated[UUID | None, Query()] = None,
+) -> list[InvoiceOut]:
+    """List invoices for the tenant (optional student filter)."""
+    invoices = await service.list_invoices(student_id=student_id)
+    return [_to_out(invoice) for invoice in invoices]
 
 
 @router.get("/{invoice_id}", response_model=InvoiceOut)

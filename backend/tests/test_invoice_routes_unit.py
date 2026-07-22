@@ -42,6 +42,16 @@ class _FakeInvoiceService:
     async def get_invoice(self, invoice_id: uuid.UUID) -> Invoice:
         return self._rows[invoice_id]
 
+    async def list_invoices(
+        self,
+        *,
+        student_id: uuid.UUID | None = None,
+    ) -> list[Invoice]:
+        rows = list(self._rows.values())
+        if student_id is not None:
+            rows = [row for row in rows if row.student_id == student_id]
+        return rows
+
     async def update_payment_status(
         self,
         invoice_id: uuid.UUID,
@@ -106,3 +116,27 @@ def test_create_invoice_and_download_pdf(client: TestClient) -> None:
     )
     assert paid.status_code == 200
     assert paid.json()["status"] == "paid"
+
+
+def test_list_invoices_returns_created_rows(client: TestClient) -> None:
+    student_id = str(uuid.uuid4())
+    created = client.post(
+        "/api/v1/invoices",
+        json={
+            "student_id": student_id,
+            "semester_label": "2026-S2",
+            "subtotal": "500.00",
+            "credit": "0.00",
+        },
+    )
+    assert created.status_code == 201
+
+    listed = client.get("/api/v1/invoices")
+    assert listed.status_code == 200
+    body = listed.json()
+    assert len(body) == 1
+    assert body[0]["student_id"] == student_id
+
+    filtered = client.get(f"/api/v1/invoices?student_id={student_id}")
+    assert filtered.status_code == 200
+    assert len(filtered.json()) == 1

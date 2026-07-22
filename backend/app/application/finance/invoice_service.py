@@ -23,6 +23,14 @@ class InvoiceRepositoryPort(Protocol):
         """Load one invoice in the tenant."""
         ...
 
+    async def list_all(self) -> list[Invoice]:
+        """List all invoices in the tenant."""
+        ...
+
+    async def list_by_student_id(self, student_id: UUID) -> list[Invoice]:
+        """List invoices for one student in the tenant."""
+        ...
+
     async def add(self, invoice: Invoice) -> Invoice:
         """Insert a new invoice."""
         ...
@@ -102,6 +110,16 @@ class InvoiceService:
         if invoice is None:
             raise InvoiceNotFoundError(f"Invoice not found: {invoice_id}")
         return invoice
+
+    async def list_invoices(
+        self,
+        *,
+        student_id: UUID | None = None,
+    ) -> list[Invoice]:
+        """List invoices for the tenant, optionally filtered by student."""
+        if student_id is not None:
+            return await self._invoices.list_by_student_id(student_id)
+        return await self._invoices.list_all()
 
     async def update_payment_status(
         self,

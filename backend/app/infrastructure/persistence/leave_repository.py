@@ -47,6 +47,34 @@ class SqlAlchemyLeaveRequestRepository(SqlAlchemyTenantScopedRepository):
         )
         return int(await self._session.scalar(statement) or 0)
 
+    async def list(
+        self,
+        *,
+        status: str | None = None,
+        student_id: UUID | None = None,
+        limit: int = 100,
+    ) -> list[LeaveRequest]:
+        """Return leave requests for this tenant, newest first.
+
+        Args:
+            status: Optional status filter (pending/approved/rejected).
+            student_id: Optional student filter.
+            limit: Max rows to return (capped at 200).
+        """
+        capped = max(1, min(limit, 200))
+        statement = select(LeaveRequestModel)
+        if student_id is not None:
+            statement = statement.where(LeaveRequestModel.student_id == student_id)
+        if status is not None:
+            statement = statement.where(LeaveRequestModel.status == status)
+        statement = (
+            self._scoped(statement, LeaveRequestModel)
+            .order_by(LeaveRequestModel.created_at.desc())
+            .limit(capped)
+        )
+        result = await self._session.scalars(statement)
+        return [model_to_leave(model) for model in result.all()]
+
     async def add(self, leave: LeaveRequest) -> LeaveRequest:
         """Persist a new leave request."""
         if leave.tenant_id != self._tenant_id:

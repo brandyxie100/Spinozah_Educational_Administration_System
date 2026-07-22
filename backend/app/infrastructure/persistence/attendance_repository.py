@@ -58,11 +58,32 @@ class SqlAlchemyAttendanceRepository(SqlAlchemyTenantScopedRepository):
 
     async def list_by_student_id(self, student_id: UUID) -> list[AttendanceRecord]:
         """Return all attendance rows for a student in this tenant."""
-        statement = self._scoped(
-            select(AttendanceModel)
-            .where(AttendanceModel.student_id == student_id)
-            .order_by(AttendanceModel.created_at.desc()),
-            AttendanceModel,
+        return await self.list(student_id=student_id)
+
+    async def list(
+        self,
+        *,
+        status: str | None = None,
+        student_id: UUID | None = None,
+        limit: int = 100,
+    ) -> list[AttendanceRecord]:
+        """Return attendance rows for this tenant, newest first.
+
+        Args:
+            status: Optional status filter (pending_confirmation/present/absent).
+            student_id: Optional student filter.
+            limit: Max rows to return (capped at 200).
+        """
+        capped = max(1, min(limit, 200))
+        statement = select(AttendanceModel)
+        if student_id is not None:
+            statement = statement.where(AttendanceModel.student_id == student_id)
+        if status is not None:
+            statement = statement.where(AttendanceModel.status == status)
+        statement = (
+            self._scoped(statement, AttendanceModel)
+            .order_by(AttendanceModel.created_at.desc())
+            .limit(capped)
         )
         result = await self._session.scalars(statement)
         return [model_to_attendance(model) for model in result.all()]

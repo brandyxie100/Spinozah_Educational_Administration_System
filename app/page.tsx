@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { AdminDashboardContainer } from '@/components/admin/AdminDashboardContainer';
 import { BackButton } from '@/components/dashboard/BackButton';
 import { EssayAnalysisPanel } from '@/components/essay-analysis/EssayAnalysisPanel';
+import { AttendanceLeaveContainer } from '@/components/attendance/AttendanceLeaveContainer';
 import { LessonPlanPanel } from '@/components/lesson-planning/LessonPlanPanel';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
@@ -62,11 +63,7 @@ export default function SpinozahEducationDashboard() {
       <div className="p-8 min-h-screen bg-slate-50">
         <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Attendance & Leave</h1>
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p>Charlotte: Present</p>
-          <p>Chace: Leave used 1/2</p>
-          <p>Olivia: Present</p>
-        </div>
+        <AttendanceLeaveContainer />
       </div>
     );
   }

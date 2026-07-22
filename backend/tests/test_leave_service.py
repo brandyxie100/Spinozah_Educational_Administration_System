@@ -41,6 +41,20 @@ class _MemoryLeaveRepo:
         self._rows[leave.id] = leave
         return leave
 
+    async def list(
+        self,
+        *,
+        status: str | None = None,
+        student_id: uuid.UUID | None = None,
+        limit: int = 100,
+    ) -> list[LeaveRequest]:
+        rows = list(self._rows.values())
+        if student_id is not None:
+            rows = [row for row in rows if row.student_id == student_id]
+        if status is not None:
+            rows = [row for row in rows if row.status.value == status]
+        return rows[:limit]
+
 
 class _MemoryEnrolmentRepo:
     def __init__(self, enrolment: Enrolment) -> None:

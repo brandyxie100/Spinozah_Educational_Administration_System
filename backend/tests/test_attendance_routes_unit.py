@@ -52,6 +52,23 @@ class _FakeAttendanceService:
             record.status = AttendanceStatus.ABSENT
         return AttendanceResult(attendance=record, remaining_lessons=self._remaining)
 
+    async def list_attendance(
+        self,
+        *,
+        status: str | None = None,
+        student_id: uuid.UUID | None = None,
+        limit: int = 100,
+    ) -> list[AttendanceResult]:
+        rows = list(self._records.values())
+        if student_id is not None:
+            rows = [row for row in rows if row.student_id == student_id]
+        if status is not None:
+            rows = [row for row in rows if row.status.value == status]
+        return [
+            AttendanceResult(attendance=row, remaining_lessons=self._remaining)
+            for row in rows[:limit]
+        ]
+
 
 @pytest.fixture
 def client() -> Iterator[TestClient]:
@@ -86,3 +103,18 @@ def test_check_in_and_confirm_present_flow(client: TestClient) -> None:
     assert confirmed.status_code == 200
     assert confirmed.json()["status"] == "present"
     assert confirmed.json()["remaining_lessons"] == 8
+
+
+def test_list_attendance_returns_checked_in_rows(client: TestClient) -> None:
+    schedule_id = str(uuid.uuid4())
+    created = client.post(
+        "/api/v1/attendance/check-in",
+        json={"schedule_id": schedule_id},
+    )
+    assert created.status_code == 201
+
+    listed = client.get("/api/v1/attendance?status=pending_confirmation")
+    assert listed.status_code == 200
+    body = listed.json()
+    assert len(body) == 1
+    assert body[0]["status"] == "pending_confirmation"

@@ -37,3 +37,19 @@ export {
   type TeacherScheduleSlot,
   type TimetableDisplayStatus,
 } from '@/lib/api/teachers';
+
+export {
+  approveLeaveRequest,
+  checkInAttendance,
+  confirmAttendance,
+  createLeaveRequest,
+  getLeaveUsage,
+  listAttendance,
+  listLeaveRequests,
+  rejectLeaveRequest,
+  type AttendanceCheckInInput,
+  type AttendanceRecord,
+  type LeaveRequest,
+  type LeaveRequestCreateInput,
+  type LeaveUsage,
+} from '@/lib/api/attendance';

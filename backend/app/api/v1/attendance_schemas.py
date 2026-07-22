@@ -56,3 +56,14 @@ class LeaveRequestOut(BaseModel):
     status: str
     is_free: bool | None
     extension_days_applied: int
+
+
+class LeaveUsageOut(BaseModel):
+    """Free-leave quota snapshot for a student enrolment."""
+
+    student_id: UUID
+    enrolment_id: UUID
+    approved_count: int
+    free_used: int
+    free_remaining: int
+    free_limit: int

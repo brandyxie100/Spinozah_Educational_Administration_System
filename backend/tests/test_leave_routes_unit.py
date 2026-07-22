@@ -42,6 +42,39 @@ class _FakeLeaveService:
         leave.status = LeaveStatus.REJECTED
         return leave
 
+    async def list_leave_requests(
+        self,
+        *,
+        status: str | None = None,
+        student_id: uuid.UUID | None = None,
+        limit: int = 100,
+    ) -> list[LeaveRequest]:
+        rows = list(self._rows.values())
+        if student_id is not None:
+            rows = [row for row in rows if row.student_id == student_id]
+        if status is not None:
+            rows = [row for row in rows if row.status.value == status]
+        return rows[:limit]
+
+    async def get_leave_usage(self, student_id: uuid.UUID) -> object:
+        from app.application.attendance.leave_service import LeaveUsageSummary
+
+        enrolment_id = uuid.uuid4()
+        approved = sum(
+            1
+            for row in self._rows.values()
+            if row.student_id == student_id and row.status == LeaveStatus.APPROVED
+        )
+        free_used = min(approved, 2)
+        return LeaveUsageSummary(
+            student_id=student_id,
+            enrolment_id=enrolment_id,
+            approved_count=approved,
+            free_used=free_used,
+            free_remaining=max(0, 2 - free_used),
+            free_limit=2,
+        )
+
 
 @pytest.fixture
 def client() -> Iterator[TestClient]:
@@ -75,3 +108,26 @@ def test_leave_request_and_approve_flow(client: TestClient) -> None:
     assert approved.status_code == 200
     assert approved.json()["status"] == "approved"
     assert approved.json()["is_free"] is True
+
+
+def test_list_leave_requests_and_usage(client: TestClient) -> None:
+    student_id = str(uuid.uuid4())
+    created = client.post(
+        "/api/v1/attendance/leave-requests",
+        json={
+            "student_id": student_id,
+            "leave_date": "2026-11-12",
+            "kind": "sick",
+        },
+    )
+    assert created.status_code == 201
+
+    listed = client.get("/api/v1/attendance/leave-requests?status=pending")
+    assert listed.status_code == 200
+    assert len(listed.json()) == 1
+
+    usage = client.get(f"/api/v1/attendance/leave-usage?student_id={student_id}")
+    assert usage.status_code == 200
+    body = usage.json()
+    assert body["free_limit"] == 2
+    assert body["free_remaining"] == 2

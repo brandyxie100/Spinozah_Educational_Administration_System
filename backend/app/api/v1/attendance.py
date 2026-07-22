@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import require_roles
@@ -15,6 +15,7 @@ from app.api.v1.attendance_schemas import (
     AttendanceOut,
     LeaveRequestCreate,
     LeaveRequestOut,
+    LeaveUsageOut,
 )
 from app.application.attendance.attendance_service import (
     AttendanceConflictError,
@@ -113,6 +114,72 @@ def _to_leave_out(leave: LeaveRequest) -> LeaveRequestOut:
         status=leave.status.value,
         is_free=leave.is_free,
         extension_days_applied=leave.extension_days_applied,
+    )
+
+
+@router.get("", response_model=list[AttendanceOut])
+async def list_attendance(
+    service: Annotated[AttendanceService, Depends(get_attendance_service)],
+    status_filter: Annotated[
+        str | None,
+        Query(alias="status", pattern="^(pending_confirmation|present|absent)$"),
+    ] = None,
+    student_id: Annotated[UUID | None, Query()] = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 100,
+) -> list[AttendanceOut]:
+    """List attendance records for the tenant (optional status/student filters)."""
+    results = await service.list_attendance(
+        status=status_filter,
+        student_id=student_id,
+        limit=limit,
+    )
+    return [_to_out(item) for item in results]
+
+
+@router.get("/leave-requests", response_model=list[LeaveRequestOut])
+async def list_leave_requests(
+    service: Annotated[LeaveService, Depends(get_leave_service)],
+    status_filter: Annotated[
+        str | None,
+        Query(alias="status", pattern="^(pending|approved|rejected)$"),
+    ] = None,
+    student_id: Annotated[UUID | None, Query()] = None,
+    limit: Annotated[int, Query(ge=1, le=200)] = 100,
+) -> list[LeaveRequestOut]:
+    """List leave requests for frontdesk (optional status/student filters)."""
+    leaves = await service.list_leave_requests(
+        status=status_filter,
+        student_id=student_id,
+        limit=limit,
+    )
+    return [_to_leave_out(item) for item in leaves]
+
+
+@router.get("/leave-usage", response_model=LeaveUsageOut)
+async def get_leave_usage(
+    student_id: Annotated[UUID, Query()],
+    service: Annotated[LeaveService, Depends(get_leave_service)],
+) -> LeaveUsageOut:
+    """Return free-leave usage for a student's active enrolment."""
+    try:
+        usage = await service.get_leave_usage(student_id)
+    except LeaveStudentNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except LeaveEnrolmentNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    return LeaveUsageOut(
+        student_id=usage.student_id,
+        enrolment_id=usage.enrolment_id,
+        approved_count=usage.approved_count,
+        free_used=usage.free_used,
+        free_remaining=usage.free_remaining,
+        free_limit=usage.free_limit,
     )
 
 

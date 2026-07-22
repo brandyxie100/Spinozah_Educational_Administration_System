@@ -44,6 +44,20 @@ class _MemoryAttendanceRepo:
         self._rows[record.id] = record
         return record
 
+    async def list(
+        self,
+        *,
+        status: str | None = None,
+        student_id: uuid.UUID | None = None,
+        limit: int = 100,
+    ) -> list[AttendanceRecord]:
+        rows = list(self._rows.values())
+        if student_id is not None:
+            rows = [row for row in rows if row.student_id == student_id]
+        if status is not None:
+            rows = [row for row in rows if row.status.value == status]
+        return rows[:limit]
+
 
 class _MemoryEnrolmentRepo:
     def __init__(self, enrolment: Enrolment) -> None:
@@ -141,3 +155,34 @@ async def test_check_in_rejects_duplicate_schedule() -> None:
     await service.check_in(schedule_id=schedule.id)
     with pytest.raises(AttendanceConflictError):
         await service.check_in(schedule_id=schedule.id)
+
+
+@pytest.mark.asyncio
+async def test_list_attendance_filters_pending() -> None:
+    tenant_id = uuid.uuid4()
+    student_id = uuid.uuid4()
+    starts = datetime(2026, 11, 4, 16, 0, tzinfo=TZ)
+    schedule = Schedule(
+        id=uuid.uuid4(),
+        tenant_id=tenant_id,
+        teacher_id=uuid.uuid4(),
+        student_id=student_id,
+        starts_at=starts,
+        ends_at=starts + timedelta(hours=1),
+    )
+    enrolment = Enrolment(
+        id=uuid.uuid4(),
+        tenant_id=tenant_id,
+        student_id=student_id,
+        total_lessons=10,
+        completed_lessons=0,
+    )
+    service = AttendanceService(
+        attendance_repository=_MemoryAttendanceRepo(tenant_id),  # type: ignore[arg-type]
+        enrolment_repository=_MemoryEnrolmentRepo(enrolment),  # type: ignore[arg-type]
+        schedule_repository=_MemoryScheduleRepo(schedule),  # type: ignore[arg-type]
+    )
+    await service.check_in(schedule_id=schedule.id)
+    pending = await service.list_attendance(status="pending_confirmation")
+    assert len(pending) == 1
+    assert pending[0].remaining_lessons == 10

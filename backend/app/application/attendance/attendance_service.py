@@ -136,3 +136,27 @@ class AttendanceService:
             attendance=saved,
             remaining_lessons=enrolment.remaining_lessons(),
         )
+
+    async def list_attendance(
+        self,
+        *,
+        status: str | None = None,
+        student_id: UUID | None = None,
+        limit: int = 100,
+    ) -> list[AttendanceResult]:
+        """List attendance records for the tenant with remaining lesson balances."""
+        records = await self._attendance.list(
+            status=status,
+            student_id=student_id,
+            limit=limit,
+        )
+        results: list[AttendanceResult] = []
+        for record in records:
+            enrolment = await self._enrolments.get_by_id(record.enrolment_id)
+            remaining = (
+                enrolment.remaining_lessons() if enrolment is not None else None
+            )
+            results.append(
+                AttendanceResult(attendance=record, remaining_lessons=remaining),
+            )
+        return results

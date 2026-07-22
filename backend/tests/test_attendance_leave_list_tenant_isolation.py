@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import uuid
-from datetime import date, datetime, timedelta, timezone
+from datetime import date
 
 import pytest
 from app.domain.attendance.entities import AttendanceRecord, AttendanceStatus
@@ -19,9 +19,6 @@ from app.infrastructure.persistence.leave_repository import (
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from tests.factories import TenantFactory
-
-
-TZ = timezone.utc
 
 
 @pytest.fixture
@@ -53,13 +50,7 @@ async def db_session() -> AsyncSession:
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_tenant_a_cannot_see_tenant_b_data(db_session: AsyncSession) -> None:
-    """Attendance/leave list queries must not leak cross-tenant rows.
-
-    This test requires related student/schedule/enrolment FKs. When the live
-    DB lacks seed data for those FKs, we assert scoped empty lists still do
-    not raise and remain tenant-bound (no cross-tenant leakage via unscoped
-    queries). Full FK seed coverage lives in integration suites with fixtures.
-    """
+    """Attendance/leave list queries must not leak cross-tenant rows."""
     tenant_a = TenantFactory.build()
     tenant_b = TenantFactory.build()
     db_session.add_all([tenant_a, tenant_b])
@@ -75,12 +66,6 @@ async def test_tenant_a_cannot_see_tenant_b_data(db_session: AsyncSession) -> No
     leaves_a = await leave_a.list(limit=50)
     leaves_b = await leave_b.list(limit=50)
 
-    assert isinstance(listed_a, list)
-    assert isinstance(listed_b, list)
-    assert isinstance(leaves_a, list)
-    assert isinstance(leaves_b, list)
-
-    # Ensure list filters never return rows for the other tenant id.
     for row in listed_a:
         assert row.tenant_id == tenant_a.id
     for row in listed_b:
@@ -90,7 +75,7 @@ async def test_tenant_a_cannot_see_tenant_b_data(db_session: AsyncSession) -> No
     for row in leaves_b:
         assert row.tenant_id == tenant_b.id
 
-    # Unit-level isolation of the list filter itself (in-memory contract).
+    # Domain objects belonging to tenant B must not share tenant A's id.
     foreign = AttendanceRecord(
         tenant_id=tenant_b.id,
         schedule_id=uuid.uuid4(),
@@ -109,6 +94,3 @@ async def test_tenant_a_cannot_see_tenant_b_data(db_session: AsyncSession) -> No
         status=LeaveStatus.PENDING,
     )
     assert foreign_leave.tenant_id != tenant_a.id
-
-    # Silence unused import warnings for datetime helpers kept for future FK seeds.
-    _ = datetime.now(TZ) + timedelta(days=1)

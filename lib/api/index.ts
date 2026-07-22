@@ -65,3 +65,22 @@ export {
   type InvoiceLineItem,
   type PaymentStatus,
 } from '@/lib/api/invoices';
+
+export {
+  consumeMagicLink,
+  downloadStudentInvoicePdf,
+  getStudentDashboardReport,
+  getStudentEnrolment,
+  listLinkedStudents,
+  listStudentAttendance,
+  listStudentInvoices,
+  requestMagicLink,
+  type LinkedStudent,
+  type MagicLinkRequestResponse,
+  type ParentAttendance,
+  type ParentDashboardReport,
+  type ParentEnrolment,
+  type ParentInvoice,
+  type ParentTokenResponse,
+  type ParentUser,
+} from '@/lib/api/parent';

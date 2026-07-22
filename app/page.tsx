@@ -7,13 +7,23 @@ import { EssayAnalysisPanel } from '@/components/essay-analysis/EssayAnalysisPan
 import { AttendanceLeaveContainer } from '@/components/attendance/AttendanceLeaveContainer';
 import { InvoiceListContainer } from '@/components/finance/InvoiceListContainer';
 import { LessonPlanPanel } from '@/components/lesson-planning/LessonPlanPanel';
+import { ParentPortalContainer } from '@/components/parent-portal/ParentPortalContainer';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
 import { StudentListContainer } from '@/components/students/StudentListContainer';
 import { TeacherTimetableContainer } from '@/components/timetable/TeacherTimetableContainer';
 
+function initialModuleFromUrl(): string {
+  if (typeof window === 'undefined') {
+    return 'Dashboard';
+  }
+  return (
+    new URLSearchParams(window.location.search).get('module') ?? 'Dashboard'
+  );
+}
+
 export default function SpinozahEducationDashboard() {
-  const [activeModule, setActiveModule] = useState('Dashboard');
+  const [activeModule, setActiveModule] = useState(initialModuleFromUrl);
   const goToDashboard = () => setActiveModule('Dashboard');
 
   const modules = [
@@ -84,9 +94,7 @@ export default function SpinozahEducationDashboard() {
       <div className="p-8 min-h-screen bg-slate-50">
         <BackButton onBack={goToDashboard} />
         <h1 className="text-3xl font-bold mb-6">Parent Portal</h1>
-        <div className="bg-white p-6 rounded-xl shadow">
-          <p>Charlotte: 8 lessons completed, 2 remaining</p>
-        </div>
+        <ParentPortalContainer />
       </div>
     );
   }

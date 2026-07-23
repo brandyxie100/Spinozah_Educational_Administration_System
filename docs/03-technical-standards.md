@@ -23,7 +23,7 @@ This document provides a **comprehensive overview** of the full project technolo
 ┌───────────────────────────▼─────────────────────────────────┐
 │                    API Interface Layer                       │
 │  FastAPI · Pydantic v2 · JWT middleware · OpenAPI 3         │
-│  Next.js Route Handlers (BFF / prototype only)               │
+│  Next.js Route Handlers (AI BFF under app/api/ai/)           │
 └───────────────────────────┬─────────────────────────────────┘
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
@@ -331,16 +331,16 @@ npx tsc --noEmit
 npm test              # when test script added
 ```
 
-Or use `make lint` and `make test` when Makefile is added.
+Or use `make lint` and `make test` from the repository root.
 
-### 9.2 CI Pipeline (Target — 6 checks)
+### 9.2 CI Pipeline (6 checks)
 
 1. PR base branch = `main`
 2. Backend lint (Ruff + mypy)
 3. Backend tests + coverage
 4. Frontend lint (ESLint + tsc)
 5. Frontend tests
-6. Build verification (`next build`, Docker image if applicable)
+6. Build verification (`next build`)
 
 ### 9.3 Pull Request Limits
 
@@ -361,22 +361,14 @@ Or use `make lint` and `make test` when Makefile is added.
 
 ---
 
-## 11. Docker & Environment (Target)
+## 11. Docker & Environment
 
-```yaml
-# docker-compose.yml (illustrative)
-services:
-  db:
-    image: postgres:15
-  api:
-    build: ./backend
-    env_file: .env
-  web:
-    build: .
-    ports: ["3000:3000"]
-```
+Root `docker-compose.yml` provides:
 
-See `04-operations-manual.md` for setup steps.
+- **`db`** — PostgreSQL 15 (default `docker compose up -d db`)
+- **`api`** — FastAPI image behind Compose profile `api`
+
+Frontend runs via `npm run dev` on the host. See `04-operations-manual.md` and root `README.md` for setup steps.
 
 ---
 

@@ -9,11 +9,11 @@ export const UNIVERSITY_PATHWAY_MODEL = 'gpt-4o-mini';
 
 /** System prompt instructing the model to return Skill J structured JSON. */
 export const UNIVERSITY_PATHWAY_SYSTEM_PROMPT = `You are an expert university admissions counsellor for tutoring centers.
-Given IGCSE or A-Level subject grades, recommend ranked majors and universities.
+Given IGCSE, A-Level, NCEA, or IB subject grades, recommend ranked majors and universities.
 Return ONLY valid JSON matching this shape:
 {
   "studentName": string,
-  "qualification": "IGCSE" | "A-Level",
+  "qualification": "IGCSE" | "A-Level" | "NCEA" | "IB",
   "grades": [{ "subject": string, "grade": string }],
   "summary": string,
   "universities": [
@@ -37,6 +37,10 @@ Return ONLY valid JSON matching this shape:
   "roadmapSteps": string[]
 }
 Prefer 5 universities and 5 majors, ranked by fit. Be realistic about admission probability.
+Interpret grades in context of the qualification:
+- IGCSE/A-Level: letter grades (A*–U) or 9–1 where used
+- NCEA: Excellence / Merit / Achieved (or Level 1–3 credit summaries in the grade field)
+- IB: subject scores 1–7 (and note HL/SL in the subject name when provided)
 Write summary and rationales in clear parent-friendly language.`;
 
 export interface UniversityPathwayPromptInput {
@@ -159,7 +163,7 @@ export function buildMockPathwayRecommendation(
         name: 'Data Science',
         relatedSubjects: subjects.slice(0, 2),
         admissionProbability: 66,
-        rationale: 'Growing field that rewards strong IGCSE/A-Level maths.',
+        rationale: 'Growing field that rewards strong maths across curricula.',
       },
       {
         rank: 5,

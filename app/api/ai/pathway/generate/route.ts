@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       const parsed = pathwayQualificationSchema.safeParse(body.qualification);
       if (!parsed.success) {
         return NextResponse.json(
-          { error: 'qualification must be IGCSE or A-Level' },
+          { error: 'qualification must be IGCSE, A-Level, NCEA, or IB' },
           { status: 400 },
         );
       }

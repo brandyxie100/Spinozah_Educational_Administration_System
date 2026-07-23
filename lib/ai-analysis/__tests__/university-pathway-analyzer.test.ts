@@ -105,6 +105,21 @@ describe('generateUniversityPathway', () => {
     process.env.OPENAI_API_KEY = originalKey;
   });
 
+  it('test_generateUniversityPathway_nceaMock_preservesQualification', async () => {
+    const originalKey = process.env.OPENAI_API_KEY;
+    delete process.env.OPENAI_API_KEY;
+
+    const recommendation = await generateUniversityPathway(
+      [{ subject: 'Calculus', grade: 'Excellence' }],
+      { qualification: 'NCEA', studentName: 'Moana' },
+    );
+
+    expect(recommendation.qualification).toBe('NCEA');
+    expect(recommendation.studentName).toBe('Moana');
+
+    process.env.OPENAI_API_KEY = originalKey;
+  });
+
   it('test_generateUniversityPathway_missingApiKeyNoMock_throws', async () => {
     const originalKey = process.env.OPENAI_API_KEY;
     delete process.env.OPENAI_API_KEY;

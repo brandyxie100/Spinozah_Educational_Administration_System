@@ -1,5 +1,10 @@
 """Students & teachers application services."""
 
+from app.application.students.enrolment_service import (
+    EnrolmentNotFoundError,
+    EnrolmentService,
+    EnrolmentStudentNotFoundError,
+)
 from app.application.students.student_service import (
     StudentEmailConflictError,
     StudentNotFoundError,
@@ -15,6 +20,9 @@ from app.application.students.teacher_service import (
 )
 
 __all__ = [
+    "EnrolmentNotFoundError",
+    "EnrolmentService",
+    "EnrolmentStudentNotFoundError",
     "StudentEmailConflictError",
     "StudentNotFoundError",
     "StudentPage",

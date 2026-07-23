@@ -49,12 +49,16 @@ export {
 } from '@/lib/api/admin';
 
 export {
+  createTeacher,
   getTeacherSchedule,
   listTeachers,
+  updateTeacher,
   type Teacher,
+  type TeacherCreateInput,
   type TeacherListResponse,
   type TeacherScheduleResponse,
   type TeacherScheduleSlot,
+  type TeacherUpdateInput,
   type TimetableDisplayStatus,
 } from '@/lib/api/teachers';
 

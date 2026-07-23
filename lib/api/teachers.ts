@@ -45,6 +45,19 @@ export type TeacherScheduleResponse = {
   items: TeacherScheduleSlot[];
 };
 
+export type TeacherCreateInput = {
+  full_name: string;
+  email?: string | null;
+  user_id?: string | null;
+};
+
+export type TeacherUpdateInput = {
+  full_name: string;
+  email?: string | null;
+  is_active: boolean;
+  user_id?: string | null;
+};
+
 /** List teachers for the timetable picker. */
 export async function listTeachers(options?: {
   page?: number;
@@ -58,6 +71,39 @@ export async function listTeachers(options?: {
   });
   return apiRequest<TeacherListResponse>(
     `${getApiBaseUrl()}/api/v1/teachers?${params.toString()}`,
+  );
+}
+
+/** Create a teacher in the caller's tenant. */
+export async function createTeacher(
+  input: TeacherCreateInput,
+): Promise<Teacher> {
+  return apiRequest<Teacher>(`${getApiBaseUrl()}/api/v1/teachers`, {
+    method: 'POST',
+    body: JSON.stringify({
+      full_name: input.full_name,
+      email: input.email ?? null,
+      user_id: input.user_id ?? null,
+    }),
+  });
+}
+
+/** Replace teacher fields (PUT). */
+export async function updateTeacher(
+  teacherId: string,
+  input: TeacherUpdateInput,
+): Promise<Teacher> {
+  return apiRequest<Teacher>(
+    `${getApiBaseUrl()}/api/v1/teachers/${teacherId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({
+        full_name: input.full_name,
+        email: input.email ?? null,
+        is_active: input.is_active,
+        user_id: input.user_id ?? null,
+      }),
+    },
   );
 }
 

@@ -1,8 +1,12 @@
 /**
- * Tests for teacher timetable API helpers.
+ * Tests for teacher API helpers.
  */
 
-import { getTeacherSchedule, listTeachers } from '@/lib/api/teachers';
+import {
+  createTeacher,
+  getTeacherSchedule,
+  listTeachers,
+} from '@/lib/api/teachers';
 
 describe('teachers API helpers', () => {
   const originalFetch = global.fetch;
@@ -30,6 +34,29 @@ describe('teachers API helpers', () => {
     expect(global.fetch).toHaveBeenCalledWith(
       'http://localhost:8000/api/v1/teachers?page=1&page_size=50',
       expect.any(Object),
+    );
+  });
+
+  it('creates a teacher via POST', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      status: 201,
+      headers: { get: () => 'application/json' },
+      json: async () => ({
+        id: 't1',
+        tenant_id: 'ten1',
+        full_name: 'Ada',
+        email: 'ada@example.com',
+        user_id: null,
+        is_active: true,
+      }),
+    }) as unknown as typeof fetch;
+
+    await createTeacher({ full_name: 'Ada', email: 'ada@example.com' });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:8000/api/v1/teachers',
+      expect.objectContaining({ method: 'POST' }),
     );
   });
 

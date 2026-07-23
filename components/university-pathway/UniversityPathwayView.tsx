@@ -2,15 +2,31 @@ import type { PathwayRecommendation } from '@/lib/ai-analysis';
 
 interface UniversityPathwayViewProps {
   recommendation: PathwayRecommendation;
+  onDownloadPdf?: () => void;
+  isDownloadingPdf?: boolean;
 }
 
 /** Parent-facing view of ranked universities and majors. */
 export function UniversityPathwayView({
   recommendation,
+  onDownloadPdf,
+  isDownloadingPdf = false,
 }: UniversityPathwayViewProps) {
   return (
     <div className="mt-6 space-y-4 rounded-xl bg-slate-100 p-6">
-      <h2 className="text-2xl font-bold">University Pathway Report</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-2xl font-bold">University Pathway Report</h2>
+        {onDownloadPdf && (
+          <button
+            type="button"
+            onClick={onDownloadPdf}
+            disabled={isDownloadingPdf}
+            className="rounded-lg bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
+          >
+            {isDownloadingPdf ? 'Preparing PDF…' : 'Download PDF'}
+          </button>
+        )}
+      </div>
 
       <p>
         <strong>Student:</strong> {recommendation.studentName}

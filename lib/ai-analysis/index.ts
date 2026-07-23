@@ -36,6 +36,7 @@ export {
   ESSAY_ANALYSIS_SYSTEM_PROMPT,
 } from './essay-prompts';
 export { buildEssayReportPdfBytes } from './essay-pdf';
+export { buildPathwayReportPdfBytes } from './university-pathway-pdf';
 export {
   cambridgeCurriculumSchema,
   cambridgeLessonSchema,

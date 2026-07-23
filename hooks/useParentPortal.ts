@@ -7,6 +7,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   consumeMagicLink,
+  createParentStudentLink,
   downloadStudentInvoicePdf,
   getStudentDashboardReport,
   getStudentEnrolment,
@@ -14,10 +15,12 @@ import {
   listStudentAttendance,
   listStudentInvoices,
   requestMagicLink,
+  type ParentStudentLinkCreateInput,
 } from '@/lib/api/parent';
 import { setParentAccessToken } from '@/lib/parent-session';
 
 export const parentStudentsQueryKey = ['parent', 'students'] as const;
+export const parentStudentLinksQueryKey = ['parent', 'student-links'] as const;
 
 /** Request a magic-link email. */
 export function useRequestMagicLink() {
@@ -107,6 +110,21 @@ export function useDownloadParentInvoicePdf() {
       anchor.download = `invoice-${invoiceId}.pdf`;
       anchor.click();
       URL.revokeObjectURL(url);
+    },
+  });
+}
+
+/** Staff: create a parent↔student link (admin/frontdesk). */
+export function useCreateParentStudentLink() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: ParentStudentLinkCreateInput) =>
+      createParentStudentLink(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: parentStudentLinksQueryKey,
+      });
+      await queryClient.invalidateQueries({ queryKey: parentStudentsQueryKey });
     },
   });
 }

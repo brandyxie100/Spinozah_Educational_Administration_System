@@ -72,8 +72,33 @@ export type ParentDashboardReport = {
   unpaid_invoice_count: number;
 };
 
+export type ParentStudentLink = {
+  id: string;
+  tenant_id: string;
+  parent_user_id: string;
+  student_id: string;
+};
+
+export type ParentStudentLinkCreateInput = {
+  parent_user_id: string;
+  student_id: string;
+};
+
 function parentBaseUrl(): string {
   return `${getApiBaseUrl()}/api/v1/parent`;
+}
+
+/** Staff: link a parent user to a student (admin/frontdesk). */
+export async function createParentStudentLink(
+  input: ParentStudentLinkCreateInput,
+): Promise<ParentStudentLink> {
+  return apiRequest<ParentStudentLink>(`${parentBaseUrl()}/student-links`, {
+    method: 'POST',
+    body: JSON.stringify({
+      parent_user_id: input.parent_user_id,
+      student_id: input.student_id,
+    }),
+  });
 }
 
 /** Request a magic-link email (may return magic_url when API debug is on). */

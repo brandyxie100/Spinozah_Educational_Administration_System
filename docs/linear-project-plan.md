@@ -3,15 +3,15 @@
 **Linear project:** [Spinozah AI Education](https://linear.app/aipoweredcvprime/project/spinozah-ai-education-a4a8ea19a3ca)  
 **Team:** AI-PoweredCVPrime (`AIJOB`)  
 **Plan created:** 2026-05-19  
-**Last updated:** 2026-07-22 (v1.5)  
+**Last updated:** 2026-07-23 (v1.6)  
 **Target delivery:** 2027-01-04  
-**Cadence:** One feature per week (W1–W26 complete); UI polish backlog next
+**Cadence:** W1–W26 + dashboard UI polish — **all Done**; next backlog TBD
 
 This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-system_architecture.md`, and project workflow standards (DDD layers, test-first, bounded contexts).
 
 ---
 
-## 0. Project Status (Actual Progress — 2026-07-22)
+## 0. Project Status (Actual Progress — 2026-07-23)
 
 ### Completed (W1–W26)
 
@@ -21,25 +21,25 @@ This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-
 | Linear backlog (AIJOB-19–54) | **Done** | All granular issues + epics closed |
 | FastAPI DDD + multi-tenant DB | **Done** | `backend/`, Alembic migrations |
 | Auth / students / scheduling / attendance APIs | **Done** | M1 write APIs |
-| Finance, parent portal, admin KPI APIs + UI | **Done** | M2 (admin UI live; finance/parent APIs live) |
+| Finance, parent portal, admin KPI APIs + UI | **Done** | M2 |
 | Exam/essay AI, Cambridge planner, pathway | **Done** | M3 Next.js AI modules |
 | GitHub Actions CI | **Done** | `.github/workflows/` |
 
-### Remaining product gaps (UI polish)
+### Dashboard UI polish (AIJOB-55–58) — Done
 
-| Dashboard module | Backend | Frontend |
-|------------------|---------|----------|
-| Attendance & Leave | Write APIs shipped | **Placeholder** — list APIs + UI next |
-| Finance & Invoice | Invoice APIs shipped | **Placeholder** |
-| Parent Portal | Magic link + reads shipped | **Placeholder** |
+| Dashboard module | Backend | Frontend | Linear | PR |
+|------------------|---------|----------|--------|-----|
+| Attendance & Leave | List + usage APIs | Wired | AIJOB-56 | [#28](https://github.com/brandyxie100/Spinozah_Educational_Administration_System/pull/28) |
+| Finance & Invoice | Invoice APIs + staff list | Wired | AIJOB-57 | [#29](https://github.com/brandyxie100/Spinozah_Educational_Administration_System/pull/29) |
+| Parent Portal | Magic link + reads | Wired | AIJOB-58 | [#30](https://github.com/brandyxie100/Spinozah_Educational_Administration_System/pull/30) |
+| Epic: Dashboard UI wiring | — | — | AIJOB-55 | Closed with children |
 
-### Linear workflow snapshot (synced 2026-07-22)
+### Linear workflow snapshot (synced 2026-07-23)
 
 | Linear status | Count | Notes |
 |---------------|-------|-------|
-| **Done** | AIJOB-19–54 (epics + tasks) | Planned critical path complete |
-| **Todo / Backlog** | Polish epic + children | Dashboard UI wiring (see §11) |
-| **In Progress** | 0–1 | Attendance UI when coding |
+| **Done** | AIJOB-19–58 | Critical path + polish epic/children |
+| **Todo / Backlog / In Progress** | **0** | Queue empty — plan next backlog when ready |
 
 **Active repo:** https://github.com/brandyxie100/Spinozah_Educational_Administration_System
 
@@ -50,11 +50,11 @@ This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-
 | Item | Value |
 |------|-------|
 | **Phases** | 3 product phases → 5 milestones → **26 weekly features** — **all Done** |
-| **Epics** | 10 (AIJOB-19 … AIJOB-28) — **Done** |
-| **Granular issues** | 26 tasks (AIJOB-29 … AIJOB-54) — **Done** |
-| **Cadence** | One shippable feature per week (historical W1–W26) |
-| **Next focus** | Dashboard UI polish: Attendance → Finance → Parent Portal |
-| **Platform critical path** | Completed through AIJOB-53 |
+| **Epics** | 10 (AIJOB-19 … AIJOB-28) — **Done**; polish epic AIJOB-55 — **Done** |
+| **Granular issues** | 26 tasks (AIJOB-29 … AIJOB-54) + polish (AIJOB-56 … AIJOB-58) — **Done** |
+| **Cadence** | One shippable feature per week (historical); polish shipped Jul 2026 |
+| **Next focus** | **TBD** — Linear queue empty; define next backlog with product |
+| **Platform critical path** | Completed through AIJOB-53; UI polish through AIJOB-58 |
 
 ---
 
@@ -65,8 +65,8 @@ This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-
 | **Pre-work** | 2026-05-18 | Pre | Docs, UI shell, env, Linear | **Done** |
 | **M-A — Exam Analysis MVP** | 2026-07-01 | W1 | Testable exam/question analysis (Next.js) | **Done** |
 | **M0 — Foundation & DevEx** | 2026-08-24 | W2–W7 | CI, FastAPI, DB, Docker, tenant, API client | **Done** |
-| **M1 — Core SaaS Operations** | 2026-11-16 | W8–W19 | Auth, students, scheduling, attendance APIs | **Done** (Attendance UI polish remaining) |
-| **M2 — AI Education & Parent Portal** | 2026-12-21 | W20–W24 | Finance, parent APIs, admin, essay AI | **Done** (Finance/Parent UI polish remaining) |
+| **M1 — Core SaaS Operations** | 2026-11-16 | W8–W19 | Auth, students, scheduling, attendance (+ UI polish) | **Done** |
+| **M2 — AI Education & Parent Portal** | 2026-12-21 | W20–W24 | Finance, parent, admin, essay AI (+ UI polish) | **Done** |
 | **M3 — AI Planning Platform** | **2027-01-04** | W25–W26 | Cambridge planner, university pathway | **Done** |
 
 ---
@@ -104,6 +104,8 @@ One primary feature per week. Due date = **Sunday** of each week.
 | **W25** | Dec 22 – Dec 28 | Cambridge learning planner | AIJOB-54 | M3 | **Done** |
 | **W26** | Dec 29 – Jan 4 | University pathway engine | AIJOB-53 | M3 | **Done** |
 
+**Post-W26 polish (Jul 2026):** AIJOB-56 → AIJOB-57 → AIJOB-58 (Attendance → Finance → Parent UI) — **Done**.
+
 ---
 
 ## 4. Bounded Contexts (Issue Scopes)
@@ -139,6 +141,7 @@ One primary feature per week. Due date = **Sunday** of each week.
 | AIJOB-25 | Parent Portal | M2 | W21 – W22 | **Done** |
 | AIJOB-28 | Admin Dashboard & KPIs | M2 | W23 | **Done** |
 | AIJOB-27 | Learning & University Planning | M3 | W25 – W26 | **Done** |
+| AIJOB-55 | Dashboard UI wiring (ops modules) | Post-M3 polish | Jul 2026 | **Done** |
 
 ---
 
@@ -183,6 +186,15 @@ One primary feature per week. Due date = **Sunday** of each week.
 | W24 | AIJOB-52 | AI essay analysis | `[x]` Done |
 | W25 | AIJOB-54 | Cambridge learning planner | `[x]` Done |
 | W26 | AIJOB-53 | University pathway engine | `[x]` Done |
+
+### Completed polish (post-W26)
+
+| Order | ID | Task | Linear |
+|-------|----|------|--------|
+| Epic | AIJOB-55 | Dashboard UI wiring for ops modules | `[x]` Done |
+| 1 | AIJOB-56 | Attendance & leave list APIs + dashboard UI | `[x]` Done |
+| 2 | AIJOB-57 | Finance invoice management UI | `[x]` Done |
+| 3 | AIJOB-58 | Parent portal login and student dashboard UI | `[x]` Done |
 
 ---
 
@@ -232,15 +244,21 @@ AIJOB-32 → AIJOB-29 → AIJOB-31 → AIJOB-35 → AIJOB-37 → AIJOB-39
   → AIJOB-42 → AIJOB-45 → AIJOB-46 → AIJOB-52 → AIJOB-54 → AIJOB-53
 ```
 
+### 7.3 UI polish track (completed)
+
+```
+AIJOB-55 (epic) → AIJOB-56 → AIJOB-57 → AIJOB-58
+```
+
 ---
 
 ## 8. Priority Matrix
 
-| Priority | Meaning | Active examples |
-|----------|---------|-----------------|
-| **p1 / Urgent** | Current polish week | Attendance list APIs + dashboard UI |
-| **p2 / High** | Next polish weeks | Finance invoice UI; Parent portal UI |
-| **p3 / Medium** | Deferred extras | Pathway PDF, NCEA/IB, FastAPI AI persistence |
+| Priority | Meaning | Notes (as of v1.6) |
+|----------|---------|-------------------|
+| **p1 / Urgent** | Current ship week | No open issues |
+| **p2 / High** | Near-term backlog | Define in next planning pass |
+| **p3 / Medium** | Deferred extras | Pathway PDF, NCEA/IB, FastAPI AI persistence (candidates) |
 
 ---
 
@@ -266,25 +284,24 @@ See `docs/05-git-workflow-guide.md`.
 | Skill B — FastAPI CRUD | AIJOB-39, 40, 38 | W10, W12, W13 |
 | Skill C — Auth & RBAC | AIJOB-35, 36, 38 | W8, W9, W10 |
 | Skill D — Scheduling | AIJOB-42, 43, 44 | W15, W16, W17 |
-| Skill E — Attendance | AIJOB-45, 47 | W18, W19 |
-| Skill F — Finance | AIJOB-46 | W20 |
-| Skill K — Parent portal | AIJOB-51, 48 | W21, W22 |
+| Skill E — Attendance | AIJOB-45, 47, 56 | W18, W19; polish |
+| Skill F — Finance | AIJOB-46, 57 | W20; polish |
+| Skill K — Parent portal | AIJOB-51, 48, 58 | W21, W22; polish |
 | Skill L — Admin dashboard | AIJOB-50 | W23 |
 | Phase 3 planning | AIJOB-54, 53 | W25, W26 |
 
 ---
 
-## 11. Recommended Start Order (from 2026-07-22)
+## 11. Recommended Start Order
 
-W1–W26 planned features are **Done**. Next cadence is dashboard UI polish:
+W1–W26 and dashboard UI polish (AIJOB-55–58) are **Done**. Linear Todo/Backlog is **empty**.
 
-| Order | Action | Module |
-|-------|--------|--------|
-| **1** | Attendance & leave list APIs + dashboard UI | `attendance` / `frontend` |
-| **2** | Finance invoice management UI | `finance` / `frontend` |
-| **3** | Parent portal login and student dashboard UI | `parent-portal` / `frontend` |
+| Status | Action |
+|--------|--------|
+| **Next** | Product/planning pass — create new Linear issues when priorities are clear |
+| **Candidates** (not booked) | Pathway PDF export; NCEA/IB pathways; FastAPI persistence for AI analysis; staff auth UI wiring |
 
-**Weekly ritual:** Monday — set one issue In Progress; Sunday — PR merged + Linear Done.
+**Weekly ritual (when backlog exists):** Monday — set one issue In Progress; Sunday — PR merged + Linear Done.
 
 ---
 
@@ -292,9 +309,9 @@ W1–W26 planned features are **Done**. Next cadence is dashboard UI polish:
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| APIs Done but dashboard placeholders remain | Looks unfinished to users | Polish backlog: Attendance → Finance → Parent |
-| Attendance write-only APIs | UI cannot list pending rows | Add GET list endpoints before UI |
-| Doc statuses lagging Linear | False “14 pending todos” | v1.5 sync (this revision) |
+| Empty Linear queue | No prioritized next ship | Plan issues before coding (`写入Linear`) |
+| Doc statuses lagging Linear | False pending work | v1.6 sync (this revision) |
+| Deferred extras (PDF / curricula) | Scope creep if unplanned | Keep as p3 candidates until booked |
 | Holiday weeks (late Dec / New Year) | Historical W25–W26 | Protected M3 target; shipped |
 
 ---
@@ -303,7 +320,8 @@ W1–W26 planned features are **Done**. Next cadence is dashboard UI polish:
 
 - **Project:** https://linear.app/aipoweredcvprime/project/spinozah-ai-education-a4a8ea19a3ca
 - **Critical path:** AIJOB-29 … AIJOB-54 — **Done**
-- **Next up:** Dashboard UI polish (Attendance first)
+- **UI polish:** AIJOB-55 … AIJOB-58 — **Done**
+- **Next up:** TBD (queue empty)
 
 ---
 
@@ -318,3 +336,4 @@ W1–W26 planned features are **Done**. Next cadence is dashboard UI polish:
 | 1.3.1 | 2026-05-19 | Synced Linear issue/epic/milestone dates to weekly plan |
 | 1.4 | 2026-07-21 | **Restart after hold:** 2 Done (AIJOB-49, 33); re-anchor W3–W26 from Jul 21; project target **Jan 4, 2027**; Linear due dates + milestones refreshed |
 | 1.5 | 2026-07-22 | **W1–W26 complete:** milestones/epics/weeks → Done; next = UI polish (Attendance → Finance → Parent) |
+| 1.6 | 2026-07-23 | **UI polish Done:** AIJOB-55–58 closed (PRs #28–#30); queue empty; next backlog TBD |

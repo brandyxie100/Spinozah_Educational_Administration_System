@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { AdminDashboardContainer } from '@/components/admin/AdminDashboardContainer';
+import { StaffAuthBar } from '@/components/auth/StaffAuthBar';
+import { StaffLoginContainer } from '@/components/auth/StaffLoginContainer';
+import { StaffModuleShell } from '@/components/auth/StaffModuleShell';
 import { BackButton } from '@/components/dashboard/BackButton';
 import { EssayAnalysisPanel } from '@/components/essay-analysis/EssayAnalysisPanel';
 import { AttendanceLeaveContainer } from '@/components/attendance/AttendanceLeaveContainer';
@@ -12,6 +15,13 @@ import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAn
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
 import { StudentListContainer } from '@/components/students/StudentListContainer';
 import { TeacherTimetableContainer } from '@/components/timetable/TeacherTimetableContainer';
+import { useStaffLogout } from '@/hooks/useStaffAuth';
+import {
+  getStaffAccessToken,
+  getStaffUser,
+  wireStaffAccessTokenProvider,
+  type StaffUser,
+} from '@/lib/staff-session';
 
 function initialModuleFromUrl(): string {
   if (typeof window === 'undefined') {
@@ -22,8 +32,16 @@ function initialModuleFromUrl(): string {
   );
 }
 
+function readStaffUser(): StaffUser | null {
+  wireStaffAccessTokenProvider();
+  return getStaffAccessToken() ? getStaffUser() : null;
+}
+
 export default function SpinozahEducationDashboard() {
   const [activeModule, setActiveModule] = useState(initialModuleFromUrl);
+  const [staffUser, setStaffUser] = useState<StaffUser | null>(readStaffUser);
+  const [showStaffLogin, setShowStaffLogin] = useState(false);
+  const logoutMutation = useStaffLogout();
   const goToDashboard = () => setActiveModule('Dashboard');
 
   const modules = [
@@ -41,49 +59,41 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'Admin Dashboard') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      <StaffModuleShell title="Admin Dashboard" onBack={goToDashboard}>
         <AdminDashboardContainer />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'Teacher Timetable') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Teacher Timetable</h1>
+      <StaffModuleShell title="Teacher Timetable" onBack={goToDashboard}>
         <TeacherTimetableContainer />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'Student Management') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Student Management</h1>
+      <StaffModuleShell title="Student Management" onBack={goToDashboard}>
         <StudentListContainer />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'Attendance & Leave') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Attendance & Leave</h1>
+      <StaffModuleShell title="Attendance & Leave" onBack={goToDashboard}>
         <AttendanceLeaveContainer />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'Question Analysis') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 p-8">
         <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Question Analysis</h1>
+        <h1 className="mb-6 text-3xl font-bold">Question Analysis</h1>
         <QuestionAnalysisPanel />
       </div>
     );
@@ -91,9 +101,9 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'Parent Portal') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 p-8">
         <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Parent Portal</h1>
+        <h1 className="mb-6 text-3xl font-bold">Parent Portal</h1>
         <ParentPortalContainer />
       </div>
     );
@@ -101,19 +111,17 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'Finance & Invoice') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Finance & Invoice</h1>
+      <StaffModuleShell title="Finance & Invoice" onBack={goToDashboard}>
         <InvoiceListContainer />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'AI Reports') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 p-8">
         <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">AI Reports</h1>
+        <h1 className="mb-6 text-3xl font-bold">AI Reports</h1>
         <EssayAnalysisPanel />
       </div>
     );
@@ -121,9 +129,9 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'Lesson Planning') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 p-8">
         <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">Lesson Planning</h1>
+        <h1 className="mb-6 text-3xl font-bold">Lesson Planning</h1>
         <LessonPlanPanel />
       </div>
     );
@@ -131,9 +139,9 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'University Pathway') {
     return (
-      <div className="p-8 min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 p-8">
         <BackButton onBack={goToDashboard} />
-        <h1 className="text-3xl font-bold mb-6">University Pathway</h1>
+        <h1 className="mb-6 text-3xl font-bold">University Pathway</h1>
         <UniversityPathwayPanel />
       </div>
     );
@@ -141,19 +149,44 @@ export default function SpinozahEducationDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-3">Spinozah AI Education</h1>
+      <div className="mx-auto max-w-7xl">
+        <StaffAuthBar
+          user={staffUser}
+          isMutating={logoutMutation.isPending}
+          onSignInClick={() => setShowStaffLogin(true)}
+          onSignOut={() => {
+            logoutMutation.mutate(undefined, {
+              onSettled: () => {
+                setStaffUser(null);
+                setShowStaffLogin(false);
+              },
+            });
+          }}
+        />
+        <h1 className="mb-3 text-4xl font-bold">Spinozah AI Education</h1>
         <p className="mb-8">Current Page: {activeModule}</p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {modules.map((module, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-md p-6">
+        {showStaffLogin && !staffUser && (
+          <div className="mb-8">
+            <StaffLoginContainer
+              onSignedIn={() => {
+                setStaffUser(getStaffUser());
+                setShowStaffLogin(false);
+              }}
+            />
+          </div>
+        )}
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {modules.map((module) => (
+            <div key={module.title} className="rounded-2xl bg-white p-6 shadow-md">
               <div className="text-3xl">{module.icon}</div>
-              <h2 className="text-xl font-bold mt-3">{module.title}</h2>
-              <p className="text-gray-600 mt-2">{module.desc}</p>
+              <h2 className="mt-3 text-xl font-bold">{module.title}</h2>
+              <p className="mt-2 text-gray-600">{module.desc}</p>
               <button
+                type="button"
                 onClick={() => setActiveModule(module.title)}
-                className="mt-4 w-full bg-black text-white rounded-lg px-4 py-2"
+                className="mt-4 w-full rounded-lg bg-black px-4 py-2 text-white"
               >
                 Open
               </button>

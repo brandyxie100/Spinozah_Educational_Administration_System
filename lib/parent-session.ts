@@ -1,33 +1,24 @@
 /**
- * Session helpers for parent portal access JWT (browser-only).
+ * Parent portal session helpers (separate storage from staff JWT).
  */
 
-import { setAccessTokenProvider } from '@/lib/api/client';
+import {
+  getParentAccessToken,
+  PARENT_ACCESS_TOKEN_KEY,
+  setAccessTokenPreference,
+  setParentAccessToken,
+  wireSharedAccessTokenProvider,
+} from '@/lib/access-token';
 
-export const PARENT_ACCESS_TOKEN_KEY = 'spinozah_parent_access_token';
+export {
+  getParentAccessToken,
+  PARENT_ACCESS_TOKEN_KEY,
+  setParentAccessToken,
+  wireSharedAccessTokenProvider,
+};
 
-/** Read the stored parent access token (null on server / missing). */
-export function getParentAccessToken(): string | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  return window.sessionStorage.getItem(PARENT_ACCESS_TOKEN_KEY);
-}
-
-/** Persist parent access token and wire the shared API client. */
-export function setParentAccessToken(token: string | null): void {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  if (token) {
-    window.sessionStorage.setItem(PARENT_ACCESS_TOKEN_KEY, token);
-  } else {
-    window.sessionStorage.removeItem(PARENT_ACCESS_TOKEN_KEY);
-  }
-  setAccessTokenProvider(() => getParentAccessToken());
-}
-
-/** Ensure the API client reads the parent session token. */
+/** Prefer parent token while the parent portal module is active. */
 export function wireParentAccessTokenProvider(): void {
-  setAccessTokenProvider(() => getParentAccessToken());
+  setAccessTokenPreference('parent');
+  wireSharedAccessTokenProvider();
 }

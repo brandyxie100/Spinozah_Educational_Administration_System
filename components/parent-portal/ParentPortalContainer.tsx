@@ -4,7 +4,7 @@
  * Container: wires parent magic-link auth and dashboard reads into the view.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ParentPortalView } from '@/components/parent-portal/ParentPortalView';
 import {
@@ -24,6 +24,7 @@ import {
   setParentAccessToken,
   wireParentAccessTokenProvider,
 } from '@/lib/parent-session';
+import { wireStaffAccessTokenProvider } from '@/lib/staff-session';
 
 function errorMessage(error: unknown): string | null {
   if (!error) {
@@ -52,6 +53,13 @@ export function ParentPortalContainer() {
   const [parentUser, setParentUser] = useState<ParentUser | null>(null);
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [magicLinkHint, setMagicLinkHint] = useState<string | null>(null);
+
+  useEffect(() => {
+    wireParentAccessTokenProvider();
+    return () => {
+      wireStaffAccessTokenProvider();
+    };
+  }, []);
 
   const isAuthenticated = Boolean(accessToken);
 

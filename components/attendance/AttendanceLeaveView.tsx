@@ -11,17 +11,25 @@ import type {
   LeaveUsage,
 } from '@/lib/api/attendance';
 import type { Student } from '@/lib/api/students';
+import type { Teacher, TeacherScheduleSlot } from '@/lib/api/teachers';
 
 export type AttendanceLeaveViewProps = {
   attendance: AttendanceRecord[];
   leaveRequests: LeaveRequest[];
   students: Student[];
+  teachers: Teacher[];
+  scheduleSlots: TeacherScheduleSlot[];
+  checkInTeacherId: string;
+  checkInDate: string;
   leaveUsage: LeaveUsage | null;
   usageStudentId: string;
   isLoading: boolean;
+  isLoadingSlots: boolean;
   error: string | null;
   isMutating: boolean;
   onUsageStudentChange: (studentId: string) => void;
+  onCheckInTeacherChange: (teacherId: string) => void;
+  onCheckInDateChange: (date: string) => void;
   onCheckIn: (scheduleId: string) => void;
   onConfirm: (attendanceId: string, outcome: 'present' | 'absent') => void;
   onCreateLeave: (input: {
@@ -34,24 +42,45 @@ export type AttendanceLeaveViewProps = {
   onRejectLeave: (leaveId: string) => void;
 };
 
+function formatSlotLabel(slot: TeacherScheduleSlot): string {
+  const start = new Date(slot.starts_at).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  const end = new Date(slot.ends_at).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  const student = slot.student_name ?? 'Student';
+  const room = slot.classroom ? ` · ${slot.classroom}` : '';
+  return `${start}–${end} · ${student}${room}`;
+}
+
 /** Pure UI for check-in confirmation and leave approval. */
 export function AttendanceLeaveView({
   attendance,
   leaveRequests,
   students,
+  teachers,
+  scheduleSlots,
+  checkInTeacherId,
+  checkInDate,
   leaveUsage,
   usageStudentId,
   isLoading,
+  isLoadingSlots,
   error,
   isMutating,
   onUsageStudentChange,
+  onCheckInTeacherChange,
+  onCheckInDateChange,
   onCheckIn,
   onConfirm,
   onCreateLeave,
   onApproveLeave,
   onRejectLeave,
 }: AttendanceLeaveViewProps) {
-  const [scheduleId, setScheduleId] = useState('');
+  const [selectedScheduleId, setSelectedScheduleId] = useState('');
   const [leaveStudentId, setLeaveStudentId] = useState('');
   const [leaveDate, setLeaveDate] = useState('');
   const [leaveKind, setLeaveKind] = useState<'sick' | 'personal'>('sick');
@@ -59,12 +88,11 @@ export function AttendanceLeaveView({
 
   function handleCheckIn(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const trimmed = scheduleId.trim();
-    if (!trimmed) {
+    if (!selectedScheduleId) {
       return;
     }
-    onCheckIn(trimmed);
-    setScheduleId('');
+    onCheckIn(selectedScheduleId);
+    setSelectedScheduleId('');
   }
 
   function handleCreateLeave(event: FormEvent<HTMLFormElement>) {
@@ -128,18 +156,76 @@ export function AttendanceLeaveView({
 
       <section className="rounded-xl bg-white p-6 shadow">
         <h2 className="mb-4 text-xl font-bold">Check-in</h2>
-        <form onSubmit={handleCheckIn} className="mb-6 flex flex-wrap gap-3">
-          <input
-            type="text"
-            value={scheduleId}
-            onChange={(event) => setScheduleId(event.target.value)}
-            placeholder="Schedule UUID"
-            className="min-w-[240px] flex-1 rounded-lg border p-2 font-mono text-sm"
-          />
+        <form
+          onSubmit={handleCheckIn}
+          className="mb-6 grid gap-3 sm:grid-cols-2"
+        >
+          <label className="block text-sm font-medium text-slate-700">
+            Teacher
+            <select
+              value={checkInTeacherId}
+              onChange={(event) => {
+                onCheckInTeacherChange(event.target.value);
+                setSelectedScheduleId('');
+              }}
+              className="mt-1 block w-full rounded-lg border p-2"
+              disabled={isMutating}
+            >
+              <option value="">Select a teacher…</option>
+              {teachers.map((teacher) => (
+                <option key={teacher.id} value={teacher.id}>
+                  {teacher.full_name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm font-medium text-slate-700">
+            Lesson date
+            <input
+              type="date"
+              value={checkInDate}
+              onChange={(event) => {
+                onCheckInDateChange(event.target.value);
+                setSelectedScheduleId('');
+              }}
+              className="mt-1 block w-full rounded-lg border p-2"
+              disabled={isMutating}
+            />
+          </label>
+          <label className="block text-sm font-medium text-slate-700 sm:col-span-2">
+            Schedule
+            <select
+              value={selectedScheduleId}
+              onChange={(event) => setSelectedScheduleId(event.target.value)}
+              className="mt-1 block w-full rounded-lg border p-2"
+              disabled={
+                isMutating || !checkInTeacherId || isLoadingSlots
+              }
+              required
+            >
+              <option value="">
+                {!checkInTeacherId
+                  ? 'Select a teacher first…'
+                  : isLoadingSlots
+                    ? 'Loading lessons…'
+                    : scheduleSlots.length === 0
+                      ? 'No lessons on this date'
+                      : 'Select a lesson…'}
+              </option>
+              {scheduleSlots.map((slot) => (
+                <option
+                  key={`${slot.schedule_id}-${slot.starts_at}`}
+                  value={slot.schedule_id}
+                >
+                  {formatSlotLabel(slot)}
+                </option>
+              ))}
+            </select>
+          </label>
           <button
             type="submit"
-            disabled={isMutating || !scheduleId.trim()}
-            className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-50"
+            disabled={isMutating || !selectedScheduleId}
+            className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-50 sm:col-span-2"
           >
             Create check-in
           </button>

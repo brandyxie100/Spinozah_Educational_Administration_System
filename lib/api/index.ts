@@ -96,6 +96,16 @@ export {
 } from '@/lib/api/schedules';
 
 export {
+  createEnrolment,
+  listEnrolments,
+  updateEnrolment,
+  type Enrolment,
+  type EnrolmentCreateInput,
+  type EnrolmentStatus,
+  type EnrolmentUpdateInput,
+} from '@/lib/api/enrolments';
+
+export {
   consumeMagicLink,
   createParentStudentLink,
   downloadStudentInvoicePdf,

@@ -90,6 +90,12 @@ export {
 } from '@/lib/api/invoices';
 
 export {
+  createSchedule,
+  type Schedule,
+  type ScheduleCreateInput,
+} from '@/lib/api/schedules';
+
+export {
   consumeMagicLink,
   downloadStudentInvoicePdf,
   getStudentDashboardReport,

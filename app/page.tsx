@@ -12,6 +12,7 @@ import { InvoiceListContainer } from '@/components/finance/InvoiceListContainer'
 import { LessonPlanPanel } from '@/components/lesson-planning/LessonPlanPanel';
 import { ParentPortalContainer } from '@/components/parent-portal/ParentPortalContainer';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
+import { ScheduleCreateContainer } from '@/components/schedules/ScheduleCreateContainer';
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
 import { StudentListContainer } from '@/components/students/StudentListContainer';
 import { TeacherListContainer } from '@/components/teachers/TeacherListContainer';
@@ -51,6 +52,7 @@ export default function SpinozahEducationDashboard() {
     { title: 'User Management', icon: '👤', desc: 'Admin create/list/update/deactivate users' },
     { title: 'Teacher Management', icon: '🧑‍🏫', desc: 'Create and edit teacher profiles' },
     { title: 'Teacher Timetable', icon: '🗓️', desc: '老师查看实时排课与课程更新' },
+    { title: 'Schedule Management', icon: '📅', desc: 'Create lesson schedules for teacher and student' },
     { title: 'Student Management', icon: '👩‍🎓', desc: '学生录入、编辑、课时管理' },
     { title: 'Attendance & Leave', icon: '✅', desc: '系统到课后自动提醒老师确认消课，请假2次限制' },
     { title: 'Question Analysis', icon: '📝', desc: '上传试卷分析错题和薄弱知识点' },
@@ -89,6 +91,14 @@ export default function SpinozahEducationDashboard() {
     return (
       <StaffModuleShell title="Teacher Timetable" onBack={goToDashboard}>
         <TeacherTimetableContainer />
+      </StaffModuleShell>
+    );
+  }
+
+  if (activeModule === 'Schedule Management') {
+    return (
+      <StaffModuleShell title="Schedule Management" onBack={goToDashboard}>
+        <ScheduleCreateContainer />
       </StaffModuleShell>
     );
   }

@@ -6,7 +6,11 @@ import uuid
 
 import factory
 from app.infrastructure.persistence.models import TenantModel, UserModel, UserRole
-from app.infrastructure.persistence.student_models import StudentModel
+from app.infrastructure.persistence.student_models import (
+    EnrolmentModel,
+    EnrolmentStatusDB,
+    StudentModel,
+)
 from app.infrastructure.persistence.teacher_models import TeacherModel
 
 
@@ -46,6 +50,19 @@ class StudentFactory(factory.Factory):
     full_name = factory.Sequence(lambda n: f"Student {n}")
     email = factory.Sequence(lambda n: f"student{n}@example.com")
     is_active = True
+
+
+class EnrolmentFactory(factory.Factory):
+    """Build an EnrolmentModel; caller must set tenant_id and student_id."""
+
+    class Meta:
+        model = EnrolmentModel
+
+    id = factory.LazyFunction(uuid.uuid4)
+    total_lessons = 10
+    completed_lessons = 0
+    extension_days = 0
+    status = EnrolmentStatusDB.ACTIVE
 
 
 class TeacherFactory(factory.Factory):

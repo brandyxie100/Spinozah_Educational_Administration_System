@@ -13,6 +13,7 @@ from app.domain.students.entities import Enrolment
 from app.infrastructure.persistence.attendance_mapper import (
     apply_enrolment_to_model,
     attendance_to_model,
+    enrolment_to_model,
     model_to_attendance,
     model_to_enrolment,
 )
@@ -148,6 +149,37 @@ class SqlAlchemyEnrolmentRepository(SqlAlchemyTenantScopedRepository):
         result = await self._session.scalar(statement)
         model = cast(EnrolmentModel | None, result)
         return model_to_enrolment(model) if model is not None else None
+
+    async def list_by_student_id(self, student_id: UUID) -> list[Enrolment]:
+        """Return all enrolments for a student in this tenant (newest first)."""
+        statement = (
+            self._scoped(
+                select(EnrolmentModel).where(EnrolmentModel.student_id == student_id),
+                EnrolmentModel,
+            )
+            .order_by(EnrolmentModel.created_at.desc())
+        )
+        result = await self._session.scalars(statement)
+        return [model_to_enrolment(model) for model in result.all()]
+
+    async def list_all(self) -> list[Enrolment]:
+        """Return all enrolments for this tenant (newest first)."""
+        statement = self._scoped(
+            select(EnrolmentModel),
+            EnrolmentModel,
+        ).order_by(EnrolmentModel.created_at.desc())
+        result = await self._session.scalars(statement)
+        return [model_to_enrolment(model) for model in result.all()]
+
+    async def add(self, enrolment: Enrolment) -> Enrolment:
+        """Insert a new enrolment for this tenant."""
+        if enrolment.tenant_id != self._tenant_id:
+            raise ValueError("Cannot add enrolment for a different tenant")
+        model = enrolment_to_model(enrolment)
+        self._session.add(model)
+        await self._session.commit()
+        await self._session.refresh(model)
+        return model_to_enrolment(model)
 
     async def save(self, enrolment: Enrolment) -> Enrolment:
         """Persist enrolment lesson balance updates."""

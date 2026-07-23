@@ -5,7 +5,12 @@ import { UniversityPathwayView } from '@/components/university-pathway/Universit
 import { useUniversityPathway } from '@/hooks/useUniversityPathway';
 import type { PathwayQualification, SubjectGrade } from '@/lib/ai-analysis';
 
-const QUALIFICATION_OPTIONS: PathwayQualification[] = ['IGCSE', 'A-Level'];
+const QUALIFICATION_OPTIONS: PathwayQualification[] = [
+  'IGCSE',
+  'A-Level',
+  'NCEA',
+  'IB',
+];
 
 const DEFAULT_GRADES_TEXT = `Mathematics: A
 Physics: B
@@ -52,8 +57,8 @@ export function UniversityPathwayPanel() {
   return (
     <div className="space-y-4 rounded-xl bg-white p-6 shadow">
       <p className="text-sm text-slate-600">
-        Parent-facing pathway report: enter IGCSE or A-Level results to get ranked
-        majors and universities with admission chances.
+        Parent-facing pathway report: enter IGCSE, A-Level, NCEA, or IB results
+        to get ranked majors and universities with admission chances.
       </p>
 
       <label className="block text-sm font-medium text-slate-700">

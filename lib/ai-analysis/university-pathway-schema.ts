@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
-/** Qualification systems accepted for pathway input (AIJOB-53). */
-export const pathwayQualificationSchema = z.enum(['IGCSE', 'A-Level']);
+/** Qualification systems accepted for pathway input (AIJOB-53 / AIJOB-69). */
+export const pathwayQualificationSchema = z.enum([
+  'IGCSE',
+  'A-Level',
+  'NCEA',
+  'IB',
+]);
 
 export type PathwayQualification = z.infer<typeof pathwayQualificationSchema>;
 
@@ -15,7 +20,7 @@ export const pathwayRegionSchema = z.enum([
 
 export type PathwayRegion = z.infer<typeof pathwayRegionSchema>;
 
-/** One subject grade from IGCSE or A-Level results. */
+/** One subject grade from IGCSE, A-Level, NCEA, or IB results. */
 export const subjectGradeSchema = z.object({
   subject: z.string().min(1),
   grade: z.string().min(1),

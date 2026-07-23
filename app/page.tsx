@@ -15,6 +15,7 @@ import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAn
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
 import { StudentListContainer } from '@/components/students/StudentListContainer';
 import { TeacherTimetableContainer } from '@/components/timetable/TeacherTimetableContainer';
+import { UserListContainer } from '@/components/users/UserListContainer';
 import { useStaffLogout } from '@/hooks/useStaffAuth';
 import {
   getStaffAccessToken,
@@ -46,6 +47,7 @@ export default function SpinozahEducationDashboard() {
 
   const modules = [
     { title: 'Admin Dashboard', icon: '📊', desc: 'Student/teacher KPIs, revenue, unpaid alerts' },
+    { title: 'User Management', icon: '👤', desc: 'Admin create/list/update/deactivate users' },
     { title: 'Teacher Timetable', icon: '🗓️', desc: '老师查看实时排课与课程更新' },
     { title: 'Student Management', icon: '👩‍🎓', desc: '学生录入、编辑、课时管理' },
     { title: 'Attendance & Leave', icon: '✅', desc: '系统到课后自动提醒老师确认消课，请假2次限制' },
@@ -61,6 +63,14 @@ export default function SpinozahEducationDashboard() {
     return (
       <StaffModuleShell title="Admin Dashboard" onBack={goToDashboard}>
         <AdminDashboardContainer />
+      </StaffModuleShell>
+    );
+  }
+
+  if (activeModule === 'User Management') {
+    return (
+      <StaffModuleShell title="User Management" onBack={goToDashboard}>
+        <UserListContainer />
       </StaffModuleShell>
     );
   }

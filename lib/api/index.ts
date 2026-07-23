@@ -20,6 +20,18 @@ export {
 } from '@/lib/api/auth';
 
 export {
+  createUser,
+  deactivateUser,
+  listUsers,
+  updateUser,
+  type User,
+  type UserCreateInput,
+  type UserListResponse,
+  type UserRole,
+  type UserUpdateInput,
+} from '@/lib/api/users';
+
+export {
   createStudent,
   listStudents,
   updateStudent,

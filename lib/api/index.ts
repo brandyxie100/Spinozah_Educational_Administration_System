@@ -106,6 +106,15 @@ export {
 } from '@/lib/api/enrolments';
 
 export {
+  createAnalysis,
+  getAnalysis,
+  listAnalyses,
+  type AnalysisCreateInput,
+  type AnalysisKind,
+  type AnalysisRecord,
+} from '@/lib/api/analyses';
+
+export {
   consumeMagicLink,
   createParentStudentLink,
   downloadStudentInvoicePdf,

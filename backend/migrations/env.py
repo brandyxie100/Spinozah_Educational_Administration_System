@@ -8,6 +8,9 @@ from logging.config import fileConfig
 from alembic import context
 from app.core.settings import get_settings
 from app.infrastructure.persistence import (
+    analysis_models as _analysis_models,  # noqa: F401
+)
+from app.infrastructure.persistence import (
     attendance_models as _attendance_models,  # noqa: F401
 )
 from app.infrastructure.persistence import (

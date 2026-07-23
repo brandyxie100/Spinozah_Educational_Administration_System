@@ -1,5 +1,12 @@
 """Persistence adapters (SQLAlchemy models and session factory)."""
 
+from app.infrastructure.persistence.analysis_models import (
+    AnalysisKindDB,
+    AnalysisRecordModel,
+)
+from app.infrastructure.persistence.analysis_repository import (
+    SqlAlchemyAnalysisRepository,
+)
 from app.infrastructure.persistence.attendance_models import (
     AttendanceModel,
     AttendanceStatusDB,
@@ -63,6 +70,8 @@ from app.infrastructure.persistence.tenant_scoped import (
 from app.infrastructure.persistence.user_repository import SqlAlchemyUserRepository
 
 __all__ = [
+    "AnalysisKindDB",
+    "AnalysisRecordModel",
     "AttendanceModel",
     "AttendanceStatusDB",
     "Base",
@@ -77,6 +86,7 @@ __all__ = [
     "PaymentStatusDB",
     "ScheduleModel",
     "ScheduleStatusDB",
+    "SqlAlchemyAnalysisRepository",
     "SqlAlchemyAttendanceRepository",
     "SqlAlchemyEnrolmentRepository",
     "SqlAlchemyInvoiceRepository",

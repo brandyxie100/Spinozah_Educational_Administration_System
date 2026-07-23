@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health import router as health_router
 from app.api.v1.admin_kpis import router as admin_kpis_router
+from app.api.v1.analyses import router as analyses_router
 from app.api.v1.attendance import router as attendance_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.enrolments import router as enrolments_router
@@ -51,6 +52,7 @@ def create_app() -> FastAPI:
     application.include_router(schedules_router)
     application.include_router(attendance_router)
     application.include_router(invoices_router)
+    application.include_router(analyses_router)
     application.include_router(parent_router)
     return application
 

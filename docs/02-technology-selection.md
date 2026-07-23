@@ -42,7 +42,7 @@ This document records **technology choices** for the Spinozah AI Education (Facu
 | **Reverse proxy** | Platform-native (Vercel) / Caddy or Nginx on VPS | Traefik | Only if self-hosting API |
 | **CI** | GitHub Actions | CircleCI | Free for OSS/small teams |
 | **Issue tracking** | Linear | Jira | Lightweight product workflow |
-| **State (frontend)** | React Context + TanStack Query (planned) | Redux | Query handles server state; avoid Redux until needed |
+| **State (frontend)** | TanStack Query (+ light React state) | Redux | Server state via Query; session helpers for JWT |
 | **Client state** | Zustand (optional, small slices) | Redux Toolkit | Simpler than Redux for local UI state |
 | **Testing (backend)** | pytest + factory_boy | unittest | Fast fixtures, DDD test naming |
 | **Testing (frontend)** | Jest + React Testing Library + MSW | Playwright-only | Unit/integration first; E2E for critical paths |
@@ -65,7 +65,7 @@ This document records **technology choices** for the Spinozah AI Education (Facu
 
 - Extra deployment and CORS configuration without benefit at current size
 
-**Current dependencies (repo):** `next@16`, `react@19`, `tailwindcss@4`, `pdf-parse`, `tesseract.js` for document prototype.
+**Current dependencies (repo):** `next@16`, `react@19`, `tailwindcss@4`, `@tanstack/react-query`, `openai`, `zod`, `pdf-parse`, `tesseract.js`.
 
 ---
 

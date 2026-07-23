@@ -85,20 +85,23 @@ flowchart TB
 - Map HTTP status codes and error envelopes
 - Pagination, filtering, and sorting parameters
 
-**Example endpoint groups:**
+**Example endpoint groups (shipped):**
 
 | Prefix | Module |
 |--------|--------|
 | `/api/v1/auth` | Login, refresh, logout |
-| `/api/v1/students` | Student CRUD, enrolment |
+| `/api/v1/users` | Admin user management |
+| `/api/v1/students` | Student CRUD |
+| `/api/v1/enrolments` | Lesson packages |
 | `/api/v1/teachers` | Teacher CRUD |
 | `/api/v1/schedules` | Timetable, conflict checks |
 | `/api/v1/attendance` | Check-in, leave requests |
-| `/api/v1/invoices` | Billing, payments |
-| `/api/v1/ai` | Essay/exam analysis |
-| `/api/v1/parent` | Parent portal (scoped to children) |
+| `/api/v1/invoices` | Billing |
+| `/api/v1/analyses` | Persist exam/essay analysis records |
+| `/api/v1/parent` | Magic link + parent portal (scoped to children) |
+| `/api/v1/admin/...` | KPI read models |
 
-**Current state:** Next.js App Router exposes `app/api/analyze` for PDF text extraction (prototype). Full API surface will migrate to FastAPI as backend matures.
+**AI generation:** Next.js BFF under `app/api/ai/` (exams, essays, Cambridge plans, university pathway + PDF). Ops CRUD and analysis persistence use FastAPI.
 
 ---
 
@@ -242,15 +245,18 @@ Aligned with the product dashboard (`app/page.tsx`) and requirements:
 
 ---
 
-## 5. Target Repository Layout
+## 5. Repository Layout (current)
 
 ```
 spinozah-ai-education/
-├── app/                          # Next.js frontend (current root app)
-│   ├── api/                      # BFF routes (thin; proxy to backend when ready)
-│   ├── components/
-│   ├── hooks/
-│   └── page.tsx
+├── app/                          # Next.js App Router
+│   ├── api/ai/                   # AI BFF (OpenAI generation + PDF)
+│   ├── api/analyze/              # PDF text extract helper
+│   ├── parent/magic-link/        # Parent magic-link landing
+│   └── page.tsx                  # Staff dashboard shell
+├── components/                   # UI modules (auth, students, AI panels, …)
+├── hooks/                        # TanStack Query hooks
+├── lib/                          # API clients, AI schemas/prompts, session
 ├── backend/
 │   ├── app/
 │   │   ├── api/                  # FastAPI routers (Interface)
@@ -266,13 +272,12 @@ spinozah-ai-education/
 │   │   │   └── planning/
 │   │   ├── infrastructure/
 │   │   │   ├── persistence/
-│   │   │   ├── ai/
-│   │   │   └── storage/
+│   │   │   └── security/
 │   │   └── main.py
 │   ├── migrations/
 │   └── tests/
 ├── docs/
-└── docker-compose.yml            # PostgreSQL + API + web (when introduced)
+└── docker-compose.yml            # PostgreSQL (+ optional api profile)
 ```
 
 **Per-context internal structure (backend):**
@@ -385,6 +390,8 @@ See `docs/function_development_skills_guide.md` for Cursor skill templates per m
 | `03-technical-standards.md` | Coding and stack standards |
 | `04-operations-manual.md` | Setup, run, test, deploy |
 | `05-git-workflow-guide.md` | Branching, commits, PRs |
+| `06-product-user-guide.md` | Dashboard module usage |
+| `linear-project-plan.md` | Milestones and Linear status |
 
 ---
 
@@ -393,3 +400,4 @@ See `docs/function_development_skills_guide.md` for Cursor skill templates per m
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-05-19 | Architecture | Initial DDD module design |
+| 1.1 | 2026-07-24 | Architecture | Synced API surface, layout, and AI BFF split to shipped code |

@@ -3,21 +3,21 @@
 **Linear project:** [Spinozah AI Education](https://linear.app/aipoweredcvprime/project/spinozah-ai-education-a4a8ea19a3ca)  
 **Team:** AI-PoweredCVPrime (`AIJOB`)  
 **Plan created:** 2026-05-19  
-**Last updated:** 2026-07-23 (v1.7)  
+**Last updated:** 2026-07-24 (v1.8)  
 **Target delivery:** 2027-01-04  
-**Cadence:** Next = **Ops Completeness** (AIJOB-59…67) → **AI Productization** (AIJOB-60, 68–70)
+**Cadence:** Booked backlog through AIJOB-70 is **Done**; next product backlog TBD
 
 This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-system_architecture.md`, and project workflow standards (DDD layers, test-first, bounded contexts).
 
 ---
 
-## 0. Project Status (Actual Progress — 2026-07-23)
+## 0. Project Status (Actual Progress — 2026-07-24)
 
 ### Completed (W1–W26)
 
 | Area | Status | Evidence |
 |------|--------|----------|
-| Architecture docs | **Complete** | `docs/01`–`05`, this plan |
+| Architecture docs | **Complete** | `docs/01`–`06`, this plan |
 | Linear backlog (AIJOB-19–54) | **Done** | All granular issues + epics closed |
 | FastAPI DDD + multi-tenant DB | **Done** | `backend/`, Alembic migrations |
 | Auth / students / scheduling / attendance APIs | **Done** | M1 write APIs |
@@ -34,24 +34,32 @@ This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-
 | Parent Portal | Magic link + reads | Wired | AIJOB-58 | [#30](https://github.com/brandyxie100/Spinozah_Educational_Administration_System/pull/30) |
 | Epic: Dashboard UI wiring | — | — | AIJOB-55 | Closed with children |
 
-### Next backlog (booked 2026-07-23) — Ops → AI
+### Phase A — Ops Completeness (AIJOB-59…67) — Done
 
-| Phase | Epic | Focus | Status |
-|-------|------|-------|--------|
-| **A — Ops Completeness** | AIJOB-59 | Staff JWT + missing CRUD UIs | **Todo** |
-| **B — AI Productization** | AIJOB-60 | AI persistence + pathway extras | **Todo** (after Phase A starts shipping) |
+| Issue | Focus | Status |
+|-------|--------|--------|
+| AIJOB-61…67 | Staff JWT, users/teachers/schedules/attendance picker/parent links/enrolments | **Done** |
+| AIJOB-59 | Ops epic | **Done** |
 
-**First ship:** [AIJOB-61](https://linear.app/aipoweredcvprime/issue/AIJOB-61) — Staff login UI + JWT client wiring.
+### Phase B — AI Productization (AIJOB-60, 68–70) — Done
 
-### Linear workflow snapshot (synced 2026-07-23 v1.7)
+| Issue | Focus | Status |
+|-------|--------|--------|
+| AIJOB-68 | Persist exam/essay analyses in FastAPI | **Done** (#41, #42) |
+| AIJOB-69 | NCEA + IB pathway qualifications | **Done** (#43) |
+| AIJOB-70 | University pathway PDF export | **Done** (#44) |
+| AIJOB-60 | AI epic | **Done** |
+
+### Linear workflow snapshot (synced 2026-07-24 v1.8)
 
 | Linear status | Count | Notes |
 |---------------|-------|-------|
-| **Done** | AIJOB-19–58 | Critical path + polish |
-| **Todo** | AIJOB-59–70 | Ops epic + 7 children; AI epic + 3 children |
-| **In Progress** | 0 | Start with AIJOB-61 |
+| **Done** | AIJOB-19–70 (Spinozah Education) | Critical path + polish + ops + AI extras |
+| **Todo / Backlog** | 0 (this project) | Next backlog TBD |
+| **In Progress** | 0 | — |
 
-**Active repo:** https://github.com/brandyxie100/Spinozah_Educational_Administration_System
+**Active repo:** https://github.com/brandyxie100/Spinozah_Educational_Administration_System  
+**Setup / usage:** root `README.md`, `docs/04-operations-manual.md`, `docs/06-product-user-guide.md`
 
 ---
 
@@ -60,11 +68,11 @@ This plan is derived from `docs/function_development_skills_guide.md`, `docs/01-
 | Item | Value |
 |------|-------|
 | **Phases** | 3 product phases → 5 milestones → **26 weekly features** — **all Done** |
-| **Epics** | AIJOB-19…28, 55 — **Done**; AIJOB-59 (ops), AIJOB-60 (AI) — **Todo** |
-| **Granular issues** | AIJOB-29…54, 56…58 — **Done**; AIJOB-61…70 — **Todo** |
-| **Cadence** | One shippable feature per week |
-| **Next focus** | **AIJOB-61** staff login + JWT wiring (Phase A) |
-| **Platform critical path** | Completed through AIJOB-53; polish through AIJOB-58 |
+| **Epics** | AIJOB-19…28, 55, 59, 60 — **Done** |
+| **Granular issues** | AIJOB-29…54, 56…58, 61…70 — **Done** |
+| **Cadence** | One shippable feature per week (historical) |
+| **Next focus** | **TBD** — book next Linear backlog when ready |
+| **Platform critical path** | Completed through AIJOB-70 |
 ---
 
 ## 2. Milestones & Timeline
@@ -207,27 +215,27 @@ One primary feature per week. Due date = **Sunday** of each week.
 | 2 | AIJOB-57 | Finance invoice management UI | `[x]` Done |
 | 3 | AIJOB-58 | Parent portal login and student dashboard UI | `[x]` Done |
 
-### Phase A — Ops Completeness (Todo)
+### Phase A — Ops Completeness (Done)
 
 | Order | ID | Task | Linear |
 |-------|----|------|--------|
-| Epic | AIJOB-59 | Staff ops completeness (auth + CRUD surfaces) | `[T]` Todo |
-| 1 | AIJOB-61 | Staff login UI + JWT client wiring | `[T]` Todo |
-| 2 | AIJOB-62 | User management CRUD UI | `[T]` Todo |
-| 3 | AIJOB-63 | Teacher create/edit UI | `[T]` Todo |
-| 4 | AIJOB-64 | Schedule create UI + API client | `[T]` Todo |
-| 5 | AIJOB-65 | Pick schedule from timetable in Attendance UI | `[T]` Todo |
-| 6 | AIJOB-67 | Staff parent↔student link UI | `[T]` Todo |
-| 7 | AIJOB-66 | Enrolment management API + UI | `[T]` Todo |
+| Epic | AIJOB-59 | Staff ops completeness (auth + CRUD surfaces) | `[x]` Done |
+| 1 | AIJOB-61 | Staff login UI + JWT client wiring | `[x]` Done |
+| 2 | AIJOB-62 | User management CRUD UI | `[x]` Done |
+| 3 | AIJOB-63 | Teacher create/edit UI | `[x]` Done |
+| 4 | AIJOB-64 | Schedule create UI + API client | `[x]` Done |
+| 5 | AIJOB-65 | Pick schedule from timetable in Attendance UI | `[x]` Done |
+| 6 | AIJOB-67 | Staff parent↔student link UI | `[x]` Done |
+| 7 | AIJOB-66 | Enrolment management API + UI | `[x]` Done |
 
-### Phase B — AI Productization (Todo)
+### Phase B — AI Productization (Done)
 
 | Order | ID | Task | Linear |
 |-------|----|------|--------|
-| Epic | AIJOB-60 | AI persistence and pathway extras | `[T]` Todo |
-| 1 | AIJOB-68 | Persist exam/essay analyses in FastAPI | `[T]` Todo |
-| 2 | AIJOB-70 | University pathway PDF export | `[T]` Todo |
-| 3 | AIJOB-69 | NCEA and IB pathway support | `[T]` Todo |
+| Epic | AIJOB-60 | AI persistence and pathway extras | `[x]` Done |
+| 1 | AIJOB-68 | Persist exam/essay analyses in FastAPI | `[x]` Done |
+| 2 | AIJOB-70 | University pathway PDF export | `[x]` Done |
+| 3 | AIJOB-69 | NCEA and IB pathway support | `[x]` Done |
 
 ---
 
@@ -283,12 +291,12 @@ AIJOB-32 → AIJOB-29 → AIJOB-31 → AIJOB-35 → AIJOB-37 → AIJOB-39
 AIJOB-55 (epic) → AIJOB-56 → AIJOB-57 → AIJOB-58
 ```
 
-### 7.4 Post-polish backlog (Todo)
+### 7.4 Post-polish backlog (completed)
 
 ```
-AIJOB-59 (ops epic)
+AIJOB-59 (ops epic) — Done
   → AIJOB-61 → AIJOB-62 → AIJOB-63 → AIJOB-64 → AIJOB-65 → AIJOB-67 → AIJOB-66
-AIJOB-60 (AI epic; start after Phase A ships)
+AIJOB-60 (AI epic) — Done
   → AIJOB-68 → AIJOB-70 → AIJOB-69
 ```
 
@@ -296,11 +304,11 @@ AIJOB-60 (AI epic; start after Phase A ships)
 
 ## 8. Priority Matrix
 
-| Priority | Meaning | Active examples (v1.7) |
+| Priority | Meaning | Active examples (v1.8) |
 |----------|---------|------------------------|
-| **p1 / Urgent** | Current ship week | AIJOB-61 staff login + JWT |
-| **p2 / High** | Near-term Phase A | AIJOB-62…67 users/teachers/schedules/links/enrolment |
-| **p3 / Medium** | Phase B AI extras | AIJOB-68…70 persistence, pathway PDF, NCEA/IB |
+| **p1 / Urgent** | Next booked ship | TBD (queue empty) |
+| **p2 / High** | Near-term product | TBD |
+| **p3 / Medium** | Hardening / polish | Docs, observability, seed tooling |
 
 ---
 
@@ -339,20 +347,15 @@ See `docs/05-git-workflow-guide.md`.
 
 ## 11. Recommended Start Order
 
-W1–W26 and dashboard UI polish (AIJOB-55–58) are **Done**. Next cadence is booked:
+W1–W26, dashboard polish (AIJOB-55–58), Phase A (AIJOB-59…67), and Phase B (AIJOB-60, 68–70) are **Done**.
 
-| Order | Action | Linear |
+| Order | Action | Notes |
 |-------|--------|--------|
-| **1** | Staff login UI + JWT client wiring | AIJOB-61 |
-| **2** | User management CRUD UI | AIJOB-62 |
-| **3** | Teacher create/edit UI | AIJOB-63 |
-| **4** | Schedule create UI + API client | AIJOB-64 |
-| **5** | Pick schedule from timetable in Attendance UI | AIJOB-65 |
-| **6** | Staff parent↔student link UI | AIJOB-67 |
-| **7** | Enrolment management API + UI | AIJOB-66 |
-| **8+** | AI persistence → pathway PDF → NCEA/IB | AIJOB-68, 70, 69 |
+| **1** | Book next Linear backlog | Product / hardening themes TBD |
+| **2** | Keep docs current | `README.md`, `04`, `06` after each ship |
+| **3** | Optional DevEx | First-admin seed CLI, email for magic links |
 
-**Weekly ritual:** Monday — set one issue In Progress; Sunday — PR merged + Linear Done.
+**Weekly ritual (when backlog exists):** Monday — set one issue In Progress; Sunday — PR merged + Linear Done.
 
 ---
 
@@ -360,9 +363,9 @@ W1–W26 and dashboard UI polish (AIJOB-55–58) are **Done**. Next cadence is b
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Staff APIs without JWT wiring | Dashboard looks wired but fails auth | Ship AIJOB-61 first |
-| Skipping ops for AI extras | Portal/schedules unusable in real JWT env | Phase A before Phase B |
-| Doc statuses lagging Linear | False pending / empty queue | v1.7 sync (this revision) |
+| Empty product queue | Idle delivery cadence | Book Phase C in Linear when themes agreed |
+| Doc statuses lagging Linear | False pending / empty queue | v1.8 sync (this revision) |
+| Local setup friction (no seed) | New contributors cannot login | Documented seed snippet in README |
 | Holiday weeks (late Dec / New Year) | Historical W25–W26 | Protected M3 target; shipped |
 
 ---
@@ -372,9 +375,9 @@ W1–W26 and dashboard UI polish (AIJOB-55–58) are **Done**. Next cadence is b
 - **Project:** https://linear.app/aipoweredcvprime/project/spinozah-ai-education-a4a8ea19a3ca
 - **Critical path:** AIJOB-29 … AIJOB-54 — **Done**
 - **UI polish:** AIJOB-55 … AIJOB-58 — **Done**
-- **Phase A ops:** [AIJOB-59](https://linear.app/aipoweredcvprime/issue/AIJOB-59) (children AIJOB-61…67)
-- **Phase B AI:** [AIJOB-60](https://linear.app/aipoweredcvprime/issue/AIJOB-60) (children AIJOB-68…70)
-- **Next up:** [AIJOB-61](https://linear.app/aipoweredcvprime/issue/AIJOB-61) staff login + JWT
+- **Phase A ops:** [AIJOB-59](https://linear.app/aipoweredcvprime/issue/AIJOB-59) — **Done**
+- **Phase B AI:** [AIJOB-60](https://linear.app/aipoweredcvprime/issue/AIJOB-60) — **Done**
+- **Next up:** TBD (project Todo/Backlog empty)
 
 ---
 
@@ -391,3 +394,4 @@ W1–W26 and dashboard UI polish (AIJOB-55–58) are **Done**. Next cadence is b
 | 1.5 | 2026-07-22 | **W1–W26 complete:** milestones/epics/weeks → Done; next = UI polish (Attendance → Finance → Parent) |
 | 1.6 | 2026-07-23 | **UI polish Done:** AIJOB-55–58 closed (PRs #28–#30); queue empty; next backlog TBD |
 | 1.7 | 2026-07-23 | **Ops → AI backlog booked:** AIJOB-59…70 Todo; next = AIJOB-61 staff JWT |
+| 1.8 | 2026-07-24 | **AIJOB-59…70 Done;** docs/README user setup refreshed; next backlog TBD |

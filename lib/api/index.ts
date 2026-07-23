@@ -13,6 +13,13 @@ export {
 } from '@/lib/api/client';
 
 export {
+  loginStaff,
+  logoutStaff,
+  type StaffLoginInput,
+  type StaffTokenResponse,
+} from '@/lib/api/auth';
+
+export {
   createStudent,
   listStudents,
   updateStudent,

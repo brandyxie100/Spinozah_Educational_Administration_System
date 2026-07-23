@@ -97,6 +97,7 @@ export {
 
 export {
   consumeMagicLink,
+  createParentStudentLink,
   downloadStudentInvoicePdf,
   getStudentDashboardReport,
   getStudentEnrolment,
@@ -110,6 +111,8 @@ export {
   type ParentDashboardReport,
   type ParentEnrolment,
   type ParentInvoice,
+  type ParentStudentLink,
+  type ParentStudentLinkCreateInput,
   type ParentTokenResponse,
   type ParentUser,
 } from '@/lib/api/parent';

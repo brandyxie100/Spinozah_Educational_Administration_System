@@ -11,6 +11,7 @@ import { AttendanceLeaveContainer } from '@/components/attendance/AttendanceLeav
 import { InvoiceListContainer } from '@/components/finance/InvoiceListContainer';
 import { LessonPlanPanel } from '@/components/lesson-planning/LessonPlanPanel';
 import { ParentPortalContainer } from '@/components/parent-portal/ParentPortalContainer';
+import { ParentStudentLinkContainer } from '@/components/parent-portal/ParentStudentLinkContainer';
 import { QuestionAnalysisPanel } from '@/components/question-analysis/QuestionAnalysisPanel';
 import { ScheduleCreateContainer } from '@/components/schedules/ScheduleCreateContainer';
 import { UniversityPathwayPanel } from '@/components/university-pathway/UniversityPathwayPanel';
@@ -57,6 +58,7 @@ export default function SpinozahEducationDashboard() {
     { title: 'Attendance & Leave', icon: '✅', desc: '系统到课后自动提醒老师确认消课，请假2次限制' },
     { title: 'Question Analysis', icon: '📝', desc: '上传试卷分析错题和薄弱知识点' },
     { title: 'Parent Portal', icon: '📖', desc: 'Magic Link邮箱登录，查看课时与报告' },
+    { title: 'Parent Student Links', icon: '🔗', desc: 'Staff link parent users to students for portal access' },
     { title: 'Finance & Invoice', icon: '💳', desc: '自动生成账单、续费提醒' },
     { title: 'AI Reports', icon: '📄', desc: 'AI分析作文、错题与评估报告' },
     { title: 'Lesson Planning', icon: '🗂️', desc: '根据学生情况生成教学计划' },
@@ -136,6 +138,14 @@ export default function SpinozahEducationDashboard() {
         <h1 className="mb-6 text-3xl font-bold">Parent Portal</h1>
         <ParentPortalContainer />
       </div>
+    );
+  }
+
+  if (activeModule === 'Parent Student Links') {
+    return (
+      <StaffModuleShell title="Parent Student Links" onBack={goToDashboard}>
+        <ParentStudentLinkContainer />
+      </StaffModuleShell>
     );
   }
 

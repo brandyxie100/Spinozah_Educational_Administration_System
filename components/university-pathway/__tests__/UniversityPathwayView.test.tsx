@@ -2,7 +2,7 @@
  * Presenter tests for UniversityPathwayView.
  */
 
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { UniversityPathwayView } from '@/components/university-pathway/UniversityPathwayView';
 import type { PathwayRecommendation } from '@/lib/ai-analysis';
 
@@ -46,5 +46,17 @@ describe('UniversityPathwayView', () => {
       screen.getByRole('heading', { name: /#1 University of Auckland/ }),
     ).toBeInTheDocument();
     expect(screen.getByText('Aligns with maths strength')).toBeInTheDocument();
+  });
+
+  it('invokes PDF download action when provided', () => {
+    const onDownloadPdf = jest.fn();
+    render(
+      <UniversityPathwayView
+        recommendation={sample}
+        onDownloadPdf={onDownloadPdf}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Download PDF/i }));
+    expect(onDownloadPdf).toHaveBeenCalled();
   });
 });

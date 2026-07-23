@@ -9,8 +9,10 @@ jest.mock('@/hooks/useUniversityPathway', () => ({
   useUniversityPathway: () => ({
     recommendation: null,
     isGenerating: false,
+    isDownloadingPdf: false,
     error: null,
     generatePathway: jest.fn(),
+    downloadPdf: jest.fn(),
     reset: jest.fn(),
   }),
 }));

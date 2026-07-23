@@ -49,8 +49,15 @@ export function UniversityPathwayPanel() {
   const [qualification, setQualification] =
     useState<PathwayQualification>('A-Level');
   const [gradesText, setGradesText] = useState(DEFAULT_GRADES_TEXT);
-  const { recommendation, isGenerating, error, generatePathway, reset } =
-    useUniversityPathway();
+  const {
+    recommendation,
+    isGenerating,
+    isDownloadingPdf,
+    error,
+    generatePathway,
+    downloadPdf,
+    reset,
+  } = useUniversityPathway();
 
   const grades = parseGradesText(gradesText);
 
@@ -126,7 +133,11 @@ export function UniversityPathwayPanel() {
       )}
 
       {recommendation && (
-        <UniversityPathwayView recommendation={recommendation} />
+        <UniversityPathwayView
+          recommendation={recommendation}
+          onDownloadPdf={downloadPdf}
+          isDownloadingPdf={isDownloadingPdf}
+        />
       )}
     </div>
   );

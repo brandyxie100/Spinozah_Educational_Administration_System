@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Spinozah AI Education
 
-## Getting Started
+AI-powered education administration for tutoring centres — students, scheduling, attendance, finance, parent portal, and AI learning analytics.
 
-First, run the development server:
+**Repo:** [Spinozah_Educational_Administration_System](https://github.com/brandyxie100/Spinozah_Educational_Administration_System)  
+**Linear:** [Spinozah AI Education](https://linear.app/aipoweredcvprime/project/spinozah-ai-education-a4a8ea19a3ca)  
+**Plan:** [`docs/linear-project-plan.md`](docs/linear-project-plan.md)
+
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js (App Router), TanStack Query, TypeScript |
+| Backend | FastAPI (DDD), SQLAlchemy, Alembic, PostgreSQL |
+| AI (MVP) | Next.js BFF routes under `app/api/ai/` |
+
+## Local setup
 
 ```bash
+# 1. Env
+cp .env.example .env.local
+
+# 2. Postgres (and optional services)
+docker compose up -d
+
+# 3. Backend
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"   # or follow backend/README.md
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000
+
+# 4. Frontend (repo root)
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). API base URL defaults to `NEXT_PUBLIC_API_URL=http://localhost:8000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Docs
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Doc | Purpose |
+|-----|---------|
+| [`docs/01-system_architecture.md`](docs/01-system_architecture.md) | Bounded contexts & architecture |
+| [`docs/03-technical-standards.md`](docs/03-technical-standards.md) | Coding / DDD standards |
+| [`docs/05-git-workflow-guide.md`](docs/05-git-workflow-guide.md) | Branch, PR, CI |
+| [`docs/linear-project-plan.md`](docs/linear-project-plan.md) | Milestones & Linear backlog |
 
-## Learn More
+## Verify
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+make lint
+make test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Next focus
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Staff ops completeness — start with **AIJOB-61** (staff login + JWT client wiring). See plan §11.

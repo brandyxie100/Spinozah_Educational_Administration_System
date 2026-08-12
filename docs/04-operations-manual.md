@@ -70,7 +70,8 @@ Minimum for full-stack local use:
 |----------|---------|
 | `NEXT_PUBLIC_API_URL` | FastAPI base (`http://localhost:8000`) |
 | `OPENAI_API_KEY` | Server-side AI BFF (never `NEXT_PUBLIC_`) |
-| `OPENAI_MODEL` | Optional model override |
+| `OPENAI_MODEL` | Optional model override for all `lib/ai-analysis` analyzers (default `gpt-4o-mini`) |
+| `LANGCHAIN_TRACING_V2` / `LANGCHAIN_API_KEY` | Optional LangSmith tracing for Deep Agents lab scripts |
 
 **Rules:**
 

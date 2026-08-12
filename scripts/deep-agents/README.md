@@ -12,6 +12,8 @@ Lab script for the Spinozah Deep Agents roadmap. **Not production.**
 
 ## Commands
 
+The script loads `OPENAI_API_KEY` from `.env.local` / `.env` (same as Next.js). You do not need to `export` it first.
+
 ```bash
 # Mock path (no API key) — verifies wiring
 npx tsx scripts/deep-agents/run-exam-to-plan-prototype.ts --mock

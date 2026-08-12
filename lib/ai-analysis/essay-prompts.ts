@@ -1,27 +1,17 @@
 import { EXTRACTED_TEXT_PREVIEW_MAX_LENGTH } from './constants';
+import { truncateForPrompt } from './model-config';
 
-/** OpenAI model used for essay analysis (same default as exam). */
+/** OpenAI model used for essay analysis when OPENAI_MODEL is unset. */
 export const ESSAY_ANALYSIS_MODEL = 'gpt-4o-mini';
 
-/** System prompt instructing the model to return Skill G structured JSON. */
+/**
+ * Slim system prompt: Zod validates the shape after parse.
+ */
 export const ESSAY_ANALYSIS_SYSTEM_PROMPT = `You are an expert English writing tutor for tutoring centers.
-Analyze the student essay and return ONLY valid JSON matching this shape:
-{
-  "studentName": string,
-  "title": string,
-  "grammarScore": number (0-100),
-  "vocabularyScore": number (0-100),
-  "structureScore": number (0-100),
-  "cohesionNotes": string[],
-  "suggestions": {
-    "grammarImprovements": string[],
-    "advancedVocabulary": string[],
-    "sentenceRewrites": [
-      { "original": string, "rewrite": string }
-    ]
-  },
-  "summary": string
-}
+Analyze the student essay and return ONLY valid JSON with:
+studentName, title, grammarScore/vocabularyScore/structureScore (0-100),
+cohesionNotes[], suggestions{grammarImprovements[], advancedVocabulary[],
+sentenceRewrites[{original, rewrite}]}, summary.
 Be specific and actionable. Prefer 2–5 items in each suggestion array.`;
 
 /**
@@ -29,7 +19,7 @@ Be specific and actionable. Prefer 2–5 items in each suggestion array.`;
  *
  * @param essayText - Full essay text (pasted or extracted).
  * @param studentName - Optional student name hint.
- * @returns User message for the chat completion.
+ * @returns User message for the chat completion (input may be truncated).
  */
 export function buildEssayAnalysisUserPrompt(
   essayText: string,
@@ -39,7 +29,8 @@ export function buildEssayAnalysisUserPrompt(
     ? `The student name hint is "${studentName}". Use it when appropriate.\n\n`
     : '';
 
-  return `${nameHint}Analyze this essay and produce the JSON report:\n\n${essayText}`;
+  const body = truncateForPrompt(essayText);
+  return `${nameHint}Analyze this essay and produce the JSON report:\n\n${body}`;
 }
 
 /**

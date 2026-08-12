@@ -4,44 +4,20 @@ import type {
   SubjectGrade,
 } from './university-pathway-schema';
 
-/** OpenAI model used for university pathway recommendations. */
+/** OpenAI model used for university pathway recommendations when OPENAI_MODEL is unset. */
 export const UNIVERSITY_PATHWAY_MODEL = 'gpt-4o-mini';
 
-/** System prompt instructing the model to return Skill J structured JSON. */
+/**
+ * Slim system prompt: Zod validates the shape; cap list sizes for completion tokens.
+ */
 export const UNIVERSITY_PATHWAY_SYSTEM_PROMPT = `You are an expert university admissions counsellor for tutoring centers.
-Given IGCSE, A-Level, NCEA, or IB subject grades, recommend ranked majors and universities.
-Return ONLY valid JSON matching this shape:
-{
-  "studentName": string,
-  "qualification": "IGCSE" | "A-Level" | "NCEA" | "IB",
-  "grades": [{ "subject": string, "grade": string }],
-  "summary": string,
-  "universities": [
-    {
-      "rank": number (1-based),
-      "name": string,
-      "region": "UK" | "USA" | "Australia" | "New Zealand",
-      "admissionProbability": number (0-100),
-      "rationale": string
-    }
-  ],
-  "majors": [
-    {
-      "rank": number (1-based),
-      "name": string,
-      "relatedSubjects": string[],
-      "admissionProbability": number (0-100),
-      "rationale": string
-    }
-  ],
-  "roadmapSteps": string[]
-}
-Prefer 5 universities and 5 majors, ranked by fit. Be realistic about admission probability.
-Interpret grades in context of the qualification:
-- IGCSE/A-Level: letter grades (A*–U) or 9–1 where used
-- NCEA: Excellence / Merit / Achieved (or Level 1–3 credit summaries in the grade field)
-- IB: subject scores 1–7 (and note HL/SL in the subject name when provided)
-Write summary and rationales in clear parent-friendly language.`;
+Given IGCSE, A-Level, NCEA, or IB grades, recommend ranked majors and universities.
+Return ONLY valid JSON with: studentName, qualification (IGCSE|A-Level|NCEA|IB),
+grades[{subject, grade}], summary, universities[{rank, name, region (UK|USA|Australia|New Zealand),
+admissionProbability (0-100), rationale}], majors[{rank, name, relatedSubjects[],
+admissionProbability, rationale}], roadmapSteps[] (max 5).
+Return exactly 5 universities and 5 majors. Keep rationales to 1–2 short sentences.
+Interpret grades for the qualification (letters/9–1, NCEA EMA, IB 1–7). Parent-friendly language.`;
 
 export interface UniversityPathwayPromptInput {
   grades: SubjectGrade[];

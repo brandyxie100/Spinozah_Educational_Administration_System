@@ -1,32 +1,17 @@
 import type { CambridgeCurriculum, CambridgeTeachingPlan } from './cambridge-plan-schema';
 
-/** OpenAI model used for Cambridge lesson planning. */
+/** OpenAI model used for Cambridge lesson planning when OPENAI_MODEL is unset. */
 export const CAMBRIDGE_PLAN_MODEL = 'gpt-4o-mini';
 
-/** System prompt instructing the model to return Skill I structured JSON. */
+/**
+ * Slim system prompt: Zod validates the shape; keep lesson count capped for tokens.
+ */
 export const CAMBRIDGE_PLAN_SYSTEM_PROMPT = `You are an expert Cambridge curriculum tutor planner for tutoring centers.
-Generate a teaching plan that remediates the student's weak topics.
-Return ONLY valid JSON matching this shape:
-{
-  "studentName": string,
-  "curriculum": "Cambridge Primary" | "Lower Secondary" | "Checkpoint" | "IGCSE" | "AS Level" | "A Level",
-  "subject": string,
-  "weaknesses": string[],
-  "focusTopics": string[],
-  "summary": string,
-  "lessons": [
-    {
-      "lessonNumber": number (1-based),
-      "title": string,
-      "objectives": string[],
-      "activities": string[],
-      "homework": string,
-      "addressesWeaknesses": string[]
-    }
-  ]
-}
-Prefer exactly 10 lessons. Each lesson must map to at least one weakness.
-Be specific and classroom-ready (objectives, activities, homework).`;
+Generate a teaching plan that remediates weak topics. Return ONLY valid JSON with:
+studentName, curriculum (Cambridge Primary|Lower Secondary|Checkpoint|IGCSE|AS Level|A Level),
+subject, weaknesses[], focusTopics[], summary, lessons[{lessonNumber, title,
+objectives[] (max 3), activities[] (max 3), homework (1 short sentence), addressesWeaknesses[]}].
+Use exactly 10 lessons. Each lesson maps to at least one weakness. Keep text concise.`;
 
 export interface CambridgePlanPromptInput {
   weaknesses: string[];

@@ -51,5 +51,3 @@ backend/.venv/
 *.py[cod]
 .coverage
 htmlcov/
-/lib
-/lib

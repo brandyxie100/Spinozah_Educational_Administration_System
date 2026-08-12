@@ -1,5 +1,9 @@
 import OpenAI from 'openai';
 import {
+  PATHWAY_MAX_COMPLETION_TOKENS,
+  resolveOpenAiModel,
+} from './model-config';
+import {
   buildMockPathwayRecommendation,
   buildUniversityPathwayUserPrompt,
   UNIVERSITY_PATHWAY_MODEL,
@@ -12,6 +16,7 @@ import {
   type SubjectGrade,
   parsePathwayRecommendation,
 } from './university-pathway-schema';
+import { logAiUsage } from './usage-logger';
 
 export interface GenerateUniversityPathwayOptions {
   /** Optional injected OpenAI client (for tests). */
@@ -70,14 +75,20 @@ export async function generateUniversityPathway(
       apiKey: process.env.OPENAI_API_KEY,
     });
 
+  const model = resolveOpenAiModel(UNIVERSITY_PATHWAY_MODEL);
+  const startedAtMs = Date.now();
+
   const completion = await client.chat.completions.create({
-    model: UNIVERSITY_PATHWAY_MODEL,
+    model,
+    max_tokens: PATHWAY_MAX_COMPLETION_TOKENS,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: UNIVERSITY_PATHWAY_SYSTEM_PROMPT },
       { role: 'user', content: buildUniversityPathwayUserPrompt(input) },
     ],
   });
+
+  logAiUsage('university_pathway', model, startedAtMs, completion.usage);
 
   const content = completion.choices[0]?.message?.content;
   if (!content) {

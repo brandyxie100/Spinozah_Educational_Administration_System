@@ -11,6 +11,11 @@ import {
   type CambridgeTeachingPlan,
   parseCambridgeTeachingPlan,
 } from './cambridge-plan-schema';
+import {
+  CAMBRIDGE_PLAN_MAX_COMPLETION_TOKENS,
+  resolveOpenAiModel,
+} from './model-config';
+import { logAiUsage } from './usage-logger';
 
 export interface GenerateCambridgePlanOptions {
   /** Optional injected OpenAI client (for tests). */
@@ -68,14 +73,20 @@ export async function generateCambridgeTeachingPlan(
       apiKey: process.env.OPENAI_API_KEY,
     });
 
+  const model = resolveOpenAiModel(CAMBRIDGE_PLAN_MODEL);
+  const startedAtMs = Date.now();
+
   const completion = await client.chat.completions.create({
-    model: CAMBRIDGE_PLAN_MODEL,
+    model,
+    max_tokens: CAMBRIDGE_PLAN_MAX_COMPLETION_TOKENS,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: CAMBRIDGE_PLAN_SYSTEM_PROMPT },
       { role: 'user', content: buildCambridgePlanUserPrompt(input) },
     ],
   });
+
+  logAiUsage('cambridge_plan', model, startedAtMs, completion.usage);
 
   const content = completion.choices[0]?.message?.content;
   if (!content) {

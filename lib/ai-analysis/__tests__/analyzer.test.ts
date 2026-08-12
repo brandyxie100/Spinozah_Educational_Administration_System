@@ -23,6 +23,11 @@ function createMockOpenAI(content: string): OpenAI {
       completions: {
         create: jest.fn().mockResolvedValue({
           choices: [{ message: { content } }],
+          usage: {
+            prompt_tokens: 10,
+            completion_tokens: 20,
+            total_tokens: 30,
+          },
         }),
       },
     },
@@ -32,6 +37,7 @@ function createMockOpenAI(content: string): OpenAI {
 describe('analyzeExamText', () => {
   it('test_analyzeExamText_validResponse_returnsParsedReport', async () => {
     const client = createMockOpenAI(JSON.stringify(validOpenAiPayload));
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => undefined);
 
     const report = await analyzeExamText('Exam text content', {
       openai: client,
@@ -41,6 +47,17 @@ describe('analyzeExamText', () => {
     expect(report.studentName).toBe('Charlotte');
     expect(report.weakAreas).toContain('Inference');
     expect(report.extractedTextPreview).toContain('Exam text');
+    expect(client.chat.completions.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        max_tokens: expect.any(Number),
+        model: expect.any(String),
+      }),
+    );
+    expect(infoSpy).toHaveBeenCalledWith(
+      '[ai-usage]',
+      expect.stringContaining('"feature":"exam"'),
+    );
+    infoSpy.mockRestore();
   });
 
   it('test_analyzeExamText_emptyText_throws', async () => {

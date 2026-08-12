@@ -31,7 +31,7 @@ This document records **technology choices** for the Spinozah AI Education (Facu
 | **Database** | PostgreSQL 15+ | MySQL, SQLite | JSON support, reliability, SaaS multi-tenant |
 | **Migrations** | Alembic | Flyway, raw SQL | Standard with SQLAlchemy |
 | **Auth** | JWT + bcrypt | Session-only cookies, Auth0 | Simple for small team; Auth0 if SSO needed later |
-| **AI** | OpenAI API | Azure OpenAI, Anthropic | Quality + structured outputs; Azure if compliance requires |
+| **AI** | OpenAI API (single-shot BFF) | Azure OpenAI, Anthropic, Deep Agents | Quality + structured JSON for analyzers; Deep Agents only for multi-step orchestration prototypes (`scripts/deep-agents/`) |
 | **OCR** | Tesseract.js (client/proto), server OCR later | Google Vision | Cost control at low volume |
 | **PDF parse** | pdf-parse (Node), ReportLab (Python reports) | PyPDF2 only | Match current prototype + Python reporting |
 | **File storage** | AWS S3 (or compatible: R2, MinIO dev) | Local disk only | Durable uploads for exams/essays |
@@ -110,15 +110,17 @@ This document records **technology choices** for the Spinozah AI Education (Facu
 
 | Capability | Tool | Notes |
 |------------|------|-------|
-| LLM analysis | OpenAI API (GPT-4o class) | Structured JSON output enforced in prompts |
+| LLM analysis | OpenAI API (GPT-4o / mini class) | Single-shot JSON + Zod in `lib/ai-analysis/`; `OPENAI_MODEL` override; usage logged as `[ai-usage]` |
 | PDF text extract | pdf-parse (Node route) → move to Python | Prototype in `app/api/analyze` |
 | OCR (images) | Tesseract.js / pytesseract | Use server-side for production |
 | Report PDF | ReportLab | Invoices, analysis reports |
+| Multi-step agent lab | Deep Agents (`deepagents`) | Exam→plan prototype only — see `docs/07-deep-agents-decision-guide.md` |
 
 **Deferred at small scale:**
 
 - Vector DB / embedding search — add when knowledge-base search is required
 - Self-hosted models — cost and ops exceed benefit for few centers
+- Production Deep Agents orchestration — promote only after token/quality comparison vs two-shot baseline (`npm run deep-agents:compare`)
 
 ---
 

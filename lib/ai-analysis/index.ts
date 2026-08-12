@@ -13,7 +13,14 @@ export {
   EXTRACTED_TEXT_PREVIEW_MAX_LENGTH,
   SUPPORTED_IMAGE_MIME_TYPES,
   SUPPORTED_MIME_TYPES,
+  DEFAULT_MAX_COMPLETION_TOKENS,
+  DEFAULT_OPENAI_MODEL,
+  PROMPT_INPUT_MAX_CHARS,
+  resolveOpenAiModel,
+  truncateForPrompt,
 } from './constants';
+export { logAiUsage } from './usage-logger';
+export type { AiAnalysisFeature, AiUsageLogPayload, OpenAiUsageLike } from './usage-logger';
 export {
   buildCambridgePlanUserPrompt,
   buildMockCambridgeTeachingPlan,

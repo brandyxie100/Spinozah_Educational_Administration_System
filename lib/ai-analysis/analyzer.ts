@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { EXAM_ANALYSIS_MODEL } from './constants';
+import { DEFAULT_MAX_COMPLETION_TOKENS, resolveOpenAiModel } from './model-config';
 import {
   buildExamAnalysisUserPrompt,
   buildExtractedTextPreview,
@@ -9,6 +10,7 @@ import {
   type ExamAnalysisReport,
   parseExamAnalysisAiPayload,
 } from './schema';
+import { logAiUsage } from './usage-logger';
 
 export interface AnalyzeExamTextOptions {
   /** Optional injected OpenAI client (for tests). */
@@ -43,8 +45,12 @@ export async function analyzeExamText(
     throw new Error('OPENAI_API_KEY is not configured');
   }
 
+  const model = resolveOpenAiModel(EXAM_ANALYSIS_MODEL);
+  const startedAtMs = Date.now();
+
   const completion = await client.chat.completions.create({
-    model: EXAM_ANALYSIS_MODEL,
+    model,
+    max_tokens: DEFAULT_MAX_COMPLETION_TOKENS,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: EXAM_ANALYSIS_SYSTEM_PROMPT },
@@ -54,6 +60,8 @@ export async function analyzeExamText(
       },
     ],
   });
+
+  logAiUsage('exam', model, startedAtMs, completion.usage);
 
   const content = completion.choices[0]?.message?.content;
   if (!content) {

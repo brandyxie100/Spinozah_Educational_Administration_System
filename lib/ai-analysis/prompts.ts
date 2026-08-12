@@ -2,27 +2,15 @@ import {
   EXAM_ANALYSIS_MODEL,
   EXTRACTED_TEXT_PREVIEW_MAX_LENGTH,
 } from './constants';
+import { truncateForPrompt } from './model-config';
 
-/** System prompt instructing the model to return structured JSON only. */
+/**
+ * Slim system prompt: Zod validates the shape after parse; keep prose instructional.
+ */
 export const EXAM_ANALYSIS_SYSTEM_PROMPT = `You are an expert education analyst for tutoring centers.
-Analyze exam or test paper text and return ONLY valid JSON matching this shape:
-{
-  "studentName": string,
-  "subject": string,
-  "totalScore": string,
-  "strengths": string[],
-  "weakAreas": string[],
-  "knowledgePoints": string[],
-  "questionBreakdown": [
-    {
-      "questionNumber": string,
-      "topic": string,
-      "isCorrect": boolean,
-      "notes": string (optional)
-    }
-  ],
-  "recommendations": string[]
-}
+Analyze exam or test paper text and return ONLY valid JSON with:
+studentName, subject, totalScore (string), strengths[], weakAreas[], knowledgePoints[],
+questionBreakdown[{questionNumber, topic, isCorrect, notes?}], recommendations[].
 Infer subject and score when possible. Be specific about weak areas and teaching recommendations.`;
 
 /**
@@ -30,7 +18,7 @@ Infer subject and score when possible. Be specific about weak areas and teaching
  *
  * @param extractedText - Full OCR/PDF text from the uploaded paper.
  * @param studentName - Optional student name hint from filename or form.
- * @returns User message for the chat completion.
+ * @returns User message for the chat completion (input may be truncated).
  */
 export function buildExamAnalysisUserPrompt(
   extractedText: string,
@@ -40,11 +28,12 @@ export function buildExamAnalysisUserPrompt(
     ? `The student name hint is "${studentName}". Use it when appropriate.\n\n`
     : '';
 
-  return `${nameHint}Analyze this exam content and produce the JSON report:\n\n${extractedText}`;
+  const body = truncateForPrompt(extractedText);
+  return `${nameHint}Analyze this exam content and produce the JSON report:\n\n${body}`;
 }
 
 /**
- * Truncate extracted text for preview fields and prompt size control.
+ * Truncate extracted text for preview fields (UI only — not the model prompt).
  *
  * @param text - Full extracted document text.
  * @returns Preview string capped at EXTRACTED_TEXT_PREVIEW_MAX_LENGTH.

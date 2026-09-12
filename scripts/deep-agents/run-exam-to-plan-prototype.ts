@@ -5,15 +5,20 @@
  *   npx tsx scripts/deep-agents/run-exam-to-plan-prototype.ts
  *   npx tsx scripts/deep-agents/run-exam-to-plan-prototype.ts --compare
  *
- * Requires OPENAI_API_KEY for live runs. Without a key, --mock runs the mock path only.
+ * Requires OPENAI_API_KEY for live runs (loaded from `.env.local` / `.env`).
+ * Without a key, --mock runs the mock path only.
  */
 
+import { loadEnvConfig } from '@next/env';
 import {
   compareExamToPlanApproaches,
 } from '../../lib/ai-analysis/deep-agents/compare';
 import {
   runExamToPlanWithDeepAgent,
 } from '../../lib/ai-analysis/deep-agents/exam-to-plan-orchestrator';
+
+// Match Next.js: load `.env.local` then `.env` before reading process.env.
+loadEnvConfig(process.cwd());
 
 const SAMPLE_EXAM = `
 Mathematics IGCSE Paper — Student: Sample Student
@@ -43,6 +48,9 @@ async function main(): Promise<void> {
     if (!process.env.OPENAI_API_KEY) {
       console.error(
         'OPENAI_API_KEY is required for --compare (live baseline + deep agent).',
+      );
+      console.error(
+        'Set it in `.env` or `.env.local` (same as Next.js), or export it in your shell.',
       );
       process.exit(1);
     }

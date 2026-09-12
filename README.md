@@ -113,7 +113,7 @@ async def main() -> None:
         session.add(
             UserModel(
                 tenant_id=tenant.id,
-                email="admin@demo.local",
+                email="liulydia705@gmail.com",
                 full_name="Demo Admin",
                 hashed_password=BcryptPasswordHasher().hash("ChangeMe123!"),
                 role=UserRole.ADMIN,
@@ -121,7 +121,7 @@ async def main() -> None:
             )
         )
         await session.commit()
-        print("tenant_slug=demo  email=admin@demo.local  password=ChangeMe123!")
+        print("tenant_slug=demo  email=liulydia705@gmail.com  password=ChangeMe123!")
     await engine.dispose()
 
 asyncio.run(main())
@@ -133,7 +133,7 @@ Then on the dashboard click **Staff sign in** and use:
 | Field | Value |
 |-------|--------|
 | Tenant slug | `demo` |
-| Email | `admin@demo.local` |
+| Email | `liulydia705@gmail.com` |
 | Password | `ChangeMe123!` |
 
 Change the password after first login (User Management).

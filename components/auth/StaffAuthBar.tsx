@@ -43,7 +43,7 @@ export function StaffAuthBar({
         type="button"
         disabled={isMutating}
         onClick={onSignOut}
-        className="rounded-lg border px-3 py-1.5 disabled:opacity-50"
+        className="rounded-lg border border-slate-300 px-3 py-1.5 text-slate-800 disabled:opacity-50"
       >
         Sign out
       </button>

@@ -53,7 +53,7 @@ export function StaffModuleShell({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-slate-50 p-8 text-slate-900">
       <BackButton onBack={onBack} />
       <StaffAuthBar
         user={user}
@@ -69,7 +69,7 @@ export function StaffModuleShell({
           });
         }}
       />
-      <h1 className="mb-6 text-3xl font-bold">{title}</h1>
+      <h1 className="mb-6 text-3xl font-bold text-slate-900">{title}</h1>
       {!token || showLogin ? (
         <StaffLoginContainer
           onSignedIn={() => {

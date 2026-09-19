@@ -198,7 +198,7 @@ export default function SpinozahEducationDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-slate-50 p-8 text-slate-900">
       <div className="mx-auto max-w-7xl">
         <StaffAuthBar
           user={staffUser}
@@ -213,8 +213,10 @@ export default function SpinozahEducationDashboard() {
             });
           }}
         />
-        <h1 className="mb-3 text-4xl font-bold">Spinozah AI Education</h1>
-        <p className="mb-8">Current Page: {activeModule}</p>
+        <h1 className="mb-3 text-4xl font-bold text-slate-900">
+          Spinozah AI Education
+        </h1>
+        <p className="mb-8 text-slate-700">Current Page: {activeModule}</p>
 
         {showStaffLogin && !staffUser && (
           <div className="mb-8">
@@ -229,10 +231,15 @@ export default function SpinozahEducationDashboard() {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {modules.map((module) => (
-            <div key={module.title} className="rounded-2xl bg-white p-6 shadow-md">
+            <div
+              key={module.title}
+              className="rounded-2xl bg-white p-6 text-slate-900 shadow-md"
+            >
               <div className="text-3xl">{module.icon}</div>
-              <h2 className="mt-3 text-xl font-bold">{module.title}</h2>
-              <p className="mt-2 text-gray-600">{module.desc}</p>
+              <h2 className="mt-3 text-xl font-bold text-slate-900">
+                {module.title}
+              </h2>
+              <p className="mt-2 text-slate-600">{module.desc}</p>
               <button
                 type="button"
                 onClick={() => setActiveModule(module.title)}

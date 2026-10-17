@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Shell for FastAPI-backed staff modules: auth bar + login gate.
+ * Soft River shell for FastAPI-backed staff modules: auth bar + optional login gate.
  */
 
 import { useState, type ReactNode } from 'react';
@@ -20,6 +20,8 @@ export type StaffModuleShellProps = {
   title: string;
   onBack: () => void;
   children: ReactNode;
+  /** When false, skip staff JWT gate (AI / parent portal modules). Default true. */
+  requireAuth?: boolean;
 };
 
 function readStaffSession(): {
@@ -33,52 +35,63 @@ function readStaffSession(): {
   };
 }
 
-/** Prefer staff JWT and require sign-in before rendering children. */
+/** Prefer staff JWT and require sign-in before rendering children (unless requireAuth=false). */
 export function StaffModuleShell({
   title,
   onBack,
   children,
+  requireAuth = true,
 }: StaffModuleShellProps) {
   const initial = readStaffSession();
   const [token, setToken] = useState<string | null>(initial.token);
   const [user, setUser] = useState<StaffUser | null>(initial.user);
-  const [showLogin, setShowLogin] = useState(!initial.token);
+  const [showLogin, setShowLogin] = useState(requireAuth && !initial.token);
   const logoutMutation = useStaffLogout();
 
   function refreshSession() {
     wireStaffAccessTokenProvider();
     setToken(getStaffAccessToken());
     setUser(getStaffUser());
-    setShowLogin(!getStaffAccessToken());
+    setShowLogin(requireAuth && !getStaffAccessToken());
   }
 
+  const gated = requireAuth && (!token || showLogin);
+
   return (
-    <div className="min-h-screen bg-slate-50 p-8 text-slate-900">
-      <BackButton onBack={onBack} />
-      <StaffAuthBar
-        user={user}
-        isMutating={logoutMutation.isPending}
-        onSignInClick={() => setShowLogin(true)}
-        onSignOut={() => {
-          logoutMutation.mutate(undefined, {
-            onSettled: () => {
-              setToken(null);
-              setUser(null);
-              setShowLogin(true);
-            },
-          });
-        }}
-      />
-      <h1 className="mb-6 text-3xl font-bold text-slate-900">{title}</h1>
-      {!token || showLogin ? (
-        <StaffLoginContainer
-          onSignedIn={() => {
-            refreshSession();
+    <div className="min-h-screen bg-sp-canvas p-6 text-sp-ink sm:p-8">
+      <div className="mx-auto max-w-5xl">
+        <BackButton onBack={onBack} />
+        <StaffAuthBar
+          user={user}
+          isMutating={logoutMutation.isPending}
+          onSignInClick={() => setShowLogin(true)}
+          onSignOut={() => {
+            logoutMutation.mutate(undefined, {
+              onSettled: () => {
+                setToken(null);
+                setUser(null);
+                if (requireAuth) {
+                  setShowLogin(true);
+                }
+              },
+            });
           }}
         />
-      ) : (
-        children
-      )}
+        <h1 className="mb-6 font-[family-name:var(--font-fraunces)] text-3xl font-semibold text-sp-ink">
+          {title}
+        </h1>
+        {gated ? (
+          <StaffLoginContainer
+            onSignedIn={() => {
+              refreshSession();
+            }}
+          />
+        ) : (
+          <div className="rounded-2xl border border-sp-hairline bg-sp-surface p-4 shadow-sm sm:p-6">
+            {children}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

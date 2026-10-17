@@ -39,9 +39,11 @@ export function StaffLoginView({
   }
 
   return (
-    <section className="mx-auto max-w-md rounded-xl bg-white p-6 shadow">
-      <h2 className="mb-4 text-xl font-bold">Staff sign in</h2>
-      <p className="mb-4 text-sm text-slate-600">
+    <section className="mx-auto max-w-md rounded-2xl border border-sp-hairline bg-sp-surface p-6 text-sp-ink shadow-sm">
+      <h2 className="mb-2 font-[family-name:var(--font-fraunces)] text-xl font-semibold">
+        Staff sign in
+      </h2>
+      <p className="mb-4 text-sm text-sp-muted">
         Sign in to call FastAPI ops modules (students, attendance, finance,
         admin).
       </p>
@@ -54,40 +56,40 @@ export function StaffLoginView({
         </p>
       )}
       <form onSubmit={handleSubmit} className="grid gap-3">
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-sp-ink">
           Tenant slug
           <input
             type="text"
             value={tenantSlug}
             onChange={(event) => setTenantSlug(event.target.value)}
-            className="mt-1 block w-full rounded-lg border p-2"
+            className="mt-1 block w-full rounded-lg border border-sp-hairline bg-sp-canvas p-2 text-sp-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sp-orange"
             required
           />
         </label>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-sp-ink">
           Email
           <input
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="mt-1 block w-full rounded-lg border p-2"
+            className="mt-1 block w-full rounded-lg border border-sp-hairline bg-sp-canvas p-2 text-sp-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sp-orange"
             required
           />
         </label>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-sp-ink">
           Password
           <input
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="mt-1 block w-full rounded-lg border p-2"
+            className="mt-1 block w-full rounded-lg border border-sp-hairline bg-sp-canvas p-2 text-sp-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sp-orange"
             required
           />
         </label>
         <button
           type="submit"
           disabled={isMutating}
-          className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-50"
+          className="rounded-full bg-sp-orange px-4 py-2.5 font-medium text-white transition-colors hover:bg-sp-orange/90 disabled:opacity-50"
         >
           Sign in
         </button>

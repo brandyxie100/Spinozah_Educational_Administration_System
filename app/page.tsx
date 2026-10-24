@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { AdminDashboardContainer } from '@/components/admin/AdminDashboardContainer';
 import { StaffAuthBar } from '@/components/auth/StaffAuthBar';
 import { StaffLoginContainer } from '@/components/auth/StaffLoginContainer';
@@ -28,26 +28,70 @@ import {
   type StaffUser,
 } from '@/lib/staff-session';
 
-function initialModuleFromUrl(): string {
-  if (typeof window === 'undefined') {
-    return 'Dashboard';
-  }
-  return (
-    new URLSearchParams(window.location.search).get('module') ?? 'Dashboard'
-  );
+// No external event ever changes these snapshots after mount (the app
+// doesn't listen for `popstate`/`storage`), so subscribing is a no-op —
+// `useSyncExternalStore` still gives us a hydration-safe re-check after
+// the SSR-matching first paint, which a plain effect calling setState
+// cannot do without a same-render mismatch.
+function subscribeToNothing(): () => void {
+  return () => {};
 }
 
-function readStaffUser(): StaffUser | null {
-  wireStaffAccessTokenProvider();
-  return getStaffAccessToken() ? getStaffUser() : null;
+function getServerActiveModule(): string {
+  return 'Dashboard';
+}
+
+function getClientActiveModule(): string {
+  return new URLSearchParams(window.location.search).get('module') ?? 'Dashboard';
+}
+
+function getServerStaffUser(): StaffUser | null {
+  return null;
+}
+
+// getStaffUser() parses JSON on every call; cache by token so repeated
+// calls in the same commit return the same reference (useSyncExternalStore
+// warns/loops if getSnapshot() isn't referentially stable across calls).
+let cachedStaffToken: string | null = null;
+let cachedStaffUser: StaffUser | null = null;
+
+function getClientStaffUser(): StaffUser | null {
+  const token = getStaffAccessToken();
+  if (token !== cachedStaffToken) {
+    cachedStaffToken = token;
+    cachedStaffUser = token ? getStaffUser() : null;
+  }
+  return cachedStaffUser;
 }
 
 export default function SpinozahEducationDashboard() {
-  const [activeModule, setActiveModule] = useState(initialModuleFromUrl);
-  const [staffUser, setStaffUser] = useState<StaffUser | null>(readStaffUser);
+  const urlModule = useSyncExternalStore(
+    subscribeToNothing,
+    getClientActiveModule,
+    getServerActiveModule,
+  );
+  const [moduleOverride, setModuleOverride] = useState<string | null>(null);
+  const activeModule = moduleOverride ?? urlModule;
+  const setActiveModule = setModuleOverride;
+
+  const hydratedStaffUser = useSyncExternalStore(
+    subscribeToNothing,
+    getClientStaffUser,
+    getServerStaffUser,
+  );
+  const [staffOverride, setStaffOverride] = useState<StaffUser | null | undefined>(
+    undefined,
+  );
+  const staffUser = staffOverride === undefined ? hydratedStaffUser : staffOverride;
+  const setStaffUser = setStaffOverride;
+
   const [showStaffLogin, setShowStaffLogin] = useState(false);
   const logoutMutation = useStaffLogout();
   const goToDashboard = () => setActiveModule('Dashboard');
+
+  useEffect(() => {
+    wireStaffAccessTokenProvider();
+  }, []);
 
   const modules = [
     { title: 'Admin Dashboard', icon: '📊', desc: 'Student/teacher KPIs, revenue, unpaid alerts' },

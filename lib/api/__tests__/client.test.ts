@@ -107,4 +107,27 @@ describe('apiRequest', () => {
       message: 'unavailable',
     });
   });
+
+  it('formats FastAPI 422 validation error arrays into a readable message', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 422,
+      headers: { get: () => 'application/json' },
+      json: async () => ({
+        detail: [
+          {
+            loc: ['body', 'email'],
+            msg: 'value is not a valid email address',
+            type: 'value_error',
+          },
+        ],
+      }),
+    }) as unknown as typeof fetch;
+
+    await expect(apiRequest('/api/v1/auth/login')).rejects.toMatchObject({
+      name: 'ApiError',
+      status: 422,
+      message: 'email: value is not a valid email address',
+    });
+  });
 });

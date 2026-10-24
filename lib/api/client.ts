@@ -65,11 +65,32 @@ export function resolveApiUrl(path: string): string {
   return `${getApiBaseUrl()}${normalized}`;
 }
 
+/** Render one FastAPI/Pydantic validation error entry, e.g. "email: value is not a valid email address". */
+function formatValidationError(entry: unknown): string | null {
+  if (!entry || typeof entry !== 'object') {
+    return null;
+  }
+  const { loc, msg } = entry as { loc?: unknown; msg?: unknown };
+  if (typeof msg !== 'string') {
+    return null;
+  }
+  const field = Array.isArray(loc) ? loc.filter((part) => part !== 'body').pop() : null;
+  return field != null ? `${field}: ${msg}` : msg;
+}
+
 function messageFromBody(body: unknown, status: number): string {
   if (body && typeof body === 'object') {
     const record = body as Record<string, unknown>;
     if (typeof record.detail === 'string') {
       return record.detail;
+    }
+    if (Array.isArray(record.detail)) {
+      const messages = record.detail
+        .map(formatValidationError)
+        .filter((message): message is string => message != null);
+      if (messages.length > 0) {
+        return messages.join('; ');
+      }
     }
     if (typeof record.error === 'string') {
       return record.error;

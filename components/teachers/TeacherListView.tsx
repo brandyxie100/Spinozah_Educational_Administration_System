@@ -81,7 +81,7 @@ export function TeacherListView({
   }
 
   return (
-    <div className="space-y-6 rounded-xl bg-white p-6 shadow">
+    <div className="space-y-6 rounded-xl bg-white p-6 text-slate-900 shadow">
       {error ? (
         <p className="text-sm text-red-600" role="alert">
           {error}
@@ -89,30 +89,33 @@ export function TeacherListView({
       ) : null}
 
       <section aria-labelledby="create-teacher-heading">
-        <h2 id="create-teacher-heading" className="mb-3 text-lg font-semibold">
+        <h2
+          id="create-teacher-heading"
+          className="mb-3 text-lg font-semibold text-slate-900"
+        >
           Add teacher
         </h2>
         <form
           onSubmit={handleCreate}
           className="flex flex-col gap-3 md:flex-row md:items-end"
         >
-          <label className="flex flex-1 flex-col gap-1 text-sm">
+          <label className="flex flex-1 flex-col gap-1 text-sm text-slate-700">
             Full name
             <input
               value={fullName}
               onChange={(event) => setFullName(event.target.value)}
-              className="rounded-lg border px-3 py-2"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
               required
               disabled={isSaving}
             />
           </label>
-          <label className="flex flex-1 flex-col gap-1 text-sm">
+          <label className="flex flex-1 flex-col gap-1 text-sm text-slate-700">
             Email (optional)
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="rounded-lg border px-3 py-2"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
               disabled={isSaving}
             />
           </label>
@@ -127,7 +130,10 @@ export function TeacherListView({
       </section>
 
       <section aria-labelledby="teachers-list-heading">
-        <h2 id="teachers-list-heading" className="mb-3 text-lg font-semibold">
+        <h2
+          id="teachers-list-heading"
+          className="mb-3 text-lg font-semibold text-slate-900"
+        >
           Teachers ({total})
         </h2>
         {isLoading ? (
@@ -143,27 +149,27 @@ export function TeacherListView({
                     onSubmit={handleUpdate}
                     className="flex flex-col gap-3 md:flex-row md:items-end"
                   >
-                    <label className="flex flex-1 flex-col gap-1 text-sm">
+                    <label className="flex flex-1 flex-col gap-1 text-sm text-slate-700">
                       Full name
                       <input
                         value={editFullName}
                         onChange={(event) => setEditFullName(event.target.value)}
-                        className="rounded-lg border px-3 py-2"
+                        className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
                         required
                         disabled={isSaving}
                       />
                     </label>
-                    <label className="flex flex-1 flex-col gap-1 text-sm">
+                    <label className="flex flex-1 flex-col gap-1 text-sm text-slate-700">
                       Email (optional)
                       <input
                         type="email"
                         value={editEmail}
                         onChange={(event) => setEditEmail(event.target.value)}
-                        className="rounded-lg border px-3 py-2"
+                        className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
                         disabled={isSaving}
                       />
                     </label>
-                    <label className="flex items-center gap-2 text-sm">
+                    <label className="flex items-center gap-2 text-sm text-slate-700">
                       <input
                         type="checkbox"
                         checked={editIsActive}

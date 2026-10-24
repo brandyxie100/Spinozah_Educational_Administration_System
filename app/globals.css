@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
+/*
+ * Soft River theme — warm canvas, orange accent only.
+ * App UI is light-surface; do not flip to light-on-dark via prefers-color-scheme.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --sp-canvas: #fff8f3;
+  --sp-surface: #ffffff;
+  --sp-ink: #1c1917;
+  --sp-muted: #78716c;
+  --sp-orange: #ea580c;
+  --sp-orange-soft: #ffedd5;
+  --sp-hairline: #e7e5e4;
+  --background: var(--sp-canvas);
+  --foreground: var(--sp-ink);
+  color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-sp-canvas: var(--sp-canvas);
+  --color-sp-surface: var(--sp-surface);
+  --color-sp-ink: var(--sp-ink);
+  --color-sp-muted: var(--sp-muted);
+  --color-sp-orange: var(--sp-orange);
+  --color-sp-orange-soft: var(--sp-orange-soft);
+  --color-sp-hairline: var(--sp-hairline);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  background: var(--sp-canvas);
+  color: var(--sp-ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+@keyframes sp-lane-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.sp-lane {
+  animation: sp-lane-in 0.45s ease-out both;
+}
+
+.sp-lane:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.sp-lane:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.sp-lane:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.sp-lane:nth-child(4) {
+  animation-delay: 0.14s;
+}
+.sp-lane:nth-child(5) {
+  animation-delay: 0.18s;
+}
+.sp-lane:nth-child(6) {
+  animation-delay: 0.22s;
+}
+
+.sp-chip:focus-visible {
+  outline: 2px solid var(--sp-orange);
+  outline-offset: 2px;
 }

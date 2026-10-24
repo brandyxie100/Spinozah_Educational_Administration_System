@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { AdminDashboardContainer } from '@/components/admin/AdminDashboardContainer';
-import { StaffAuthBar } from '@/components/auth/StaffAuthBar';
-import { StaffLoginContainer } from '@/components/auth/StaffLoginContainer';
 import { StaffModuleShell } from '@/components/auth/StaffModuleShell';
-import { BackButton } from '@/components/dashboard/BackButton';
+import { WorkflowHome } from '@/components/dashboard/WorkflowHome';
 import { EssayAnalysisPanel } from '@/components/essay-analysis/EssayAnalysisPanel';
 import { AttendanceLeaveContainer } from '@/components/attendance/AttendanceLeaveContainer';
 import { EnrolmentListContainer } from '@/components/enrolments/EnrolmentListContainer';
@@ -110,7 +108,6 @@ export default function SpinozahEducationDashboard() {
     { title: 'Lesson Planning', icon: '🗂️', desc: '根据学生情况生成教学计划' },
     { title: 'University Pathway', icon: '🎓', desc: '根据成绩推荐大学和专业' },
   ];
-
   if (activeModule === 'Admin Dashboard') {
     return (
       <StaffModuleShell title="Admin Dashboard" onBack={goToDashboard}>
@@ -177,21 +174,17 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'Question Analysis') {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="mb-6 text-3xl font-bold">Question Analysis</h1>
+      <StaffModuleShell title="Question Analysis" onBack={goToDashboard} requireAuth={false}>
         <QuestionAnalysisPanel />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'Parent Portal') {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="mb-6 text-3xl font-bold">Parent Portal</h1>
+      <StaffModuleShell title="Parent Portal" onBack={goToDashboard} requireAuth={false}>
         <ParentPortalContainer />
-      </div>
+      </StaffModuleShell>
     );
   }
 
@@ -213,81 +206,47 @@ export default function SpinozahEducationDashboard() {
 
   if (activeModule === 'AI Reports') {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="mb-6 text-3xl font-bold">AI Reports</h1>
+      <StaffModuleShell title="AI Reports" onBack={goToDashboard} requireAuth={false}>
         <EssayAnalysisPanel />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'Lesson Planning') {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="mb-6 text-3xl font-bold">Lesson Planning</h1>
+      <StaffModuleShell title="Lesson Planning" onBack={goToDashboard} requireAuth={false}>
         <LessonPlanPanel />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   if (activeModule === 'University Pathway') {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
-        <BackButton onBack={goToDashboard} />
-        <h1 className="mb-6 text-3xl font-bold">University Pathway</h1>
+      <StaffModuleShell title="University Pathway" onBack={goToDashboard} requireAuth={false}>
         <UniversityPathwayPanel />
-      </div>
+      </StaffModuleShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <div className="mx-auto max-w-7xl">
-        <StaffAuthBar
-          user={staffUser}
-          isMutating={logoutMutation.isPending}
-          onSignInClick={() => setShowStaffLogin(true)}
-          onSignOut={() => {
-            logoutMutation.mutate(undefined, {
-              onSettled: () => {
-                setStaffUser(null);
-                setShowStaffLogin(false);
-              },
-            });
-          }}
-        />
-        <h1 className="mb-3 text-4xl font-bold">Spinozah AI Education</h1>
-        <p className="mb-8">Current Page: {activeModule}</p>
-
-        {showStaffLogin && !staffUser && (
-          <div className="mb-8">
-            <StaffLoginContainer
-              onSignedIn={() => {
-                setStaffUser(getStaffUser());
-                setShowStaffLogin(false);
-              }}
-            />
-          </div>
-        )}
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {modules.map((module) => (
-            <div key={module.title} className="rounded-2xl bg-white p-6 shadow-md">
-              <div className="text-3xl">{module.icon}</div>
-              <h2 className="mt-3 text-xl font-bold">{module.title}</h2>
-              <p className="mt-2 text-gray-600">{module.desc}</p>
-              <button
-                type="button"
-                onClick={() => setActiveModule(module.title)}
-                className="mt-4 w-full rounded-lg bg-black px-4 py-2 text-white"
-              >
-                Open
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    <WorkflowHome
+      staffUser={staffUser}
+      isMutating={logoutMutation.isPending}
+      showStaffLogin={showStaffLogin}
+      onSignInClick={() => setShowStaffLogin(true)}
+      onSignOut={() => {
+        logoutMutation.mutate(undefined, {
+          onSettled: () => {
+            setStaffUser(null);
+            setShowStaffLogin(false);
+          },
+        });
+      }}
+      onSignedIn={() => {
+        setStaffUser(getStaffUser());
+        setShowStaffLogin(false);
+      }}
+      onOpenModule={setActiveModule}
+    />
   );
 }

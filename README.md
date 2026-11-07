@@ -74,6 +74,7 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements-dev.txt
 alembic upgrade head
 uvicorn app.main:app --reload --port 8000
+
 ```
 
 - Health: [http://localhost:8000/health](http://localhost:8000/health)

@@ -1,0 +1,13 @@
+.git
+.github
+.claude
+.next
+.swc
+node_modules
+backend
+docs
+andrej-karpathy-skills-main
+.env*
+!.env.example
+.DS_Store
+*.log

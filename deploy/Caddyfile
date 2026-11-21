@@ -1,0 +1,27 @@
+# HTTP only (no domain yet). With a domain, replace ":80" with the domain
+# name and Caddy will obtain a TLS certificate automatically.
+:80 {
+	encode gzip
+
+	# FastAPI backend. Next.js owns /api/ai/* and /api/analyze, so only
+	# /api/v1/* goes to the API.
+	handle /api/v1/* {
+		reverse_proxy api:8000
+	}
+	handle /health {
+		reverse_proxy api:8000
+	}
+	handle /ready {
+		reverse_proxy api:8000
+	}
+	handle /docs* {
+		reverse_proxy api:8000
+	}
+	handle /openapi.json {
+		reverse_proxy api:8000
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}
